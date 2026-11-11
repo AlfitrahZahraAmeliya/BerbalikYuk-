@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 220" role="img" aria-label="Siswa SMP memegang buku">
+  <!-- latar lingkaran lembut -->
+  <circle cx="110" cy="110" r="90" fill="#DCE8FC"/>
+  <!-- badan: kemeja putih -->
+  <path d="M52 220c0-46 26-74 58-74s58 28 58 74z" fill="#FFFFFF" stroke="#C9D3E3" stroke-width="2"/>
+  <!-- kerah & dasi biru -->
+  <path d="M96 148l14 14 14-14" fill="none" stroke="#C9D3E3" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M110 162l-6 8 6 34 6-34z" fill="#1F4FA8"/>
+  <!-- leher -->
+  <rect x="100" y="128" width="20" height="22" rx="8" fill="#F2C29B"/>
+  <!-- kepala -->
+  <circle cx="110" cy="96" r="38" fill="#F7D2B0"/>
+  <!-- rambut -->
+  <path d="M72 92c-2-28 18-46 42-44 24 1 38 18 35 42-7-10-16-15-26-16-12 8-30 13-51 18z" fill="#3B2A20"/>
+  <!-- telinga -->
+  <circle cx="72" cy="100" r="7" fill="#F2C29B"/>
+  <circle cx="148" cy="100" r="7" fill="#F2C29B"/>
+  <!-- mata & senyum -->
+  <circle cx="96" cy="100" r="4.5" fill="#1F2933"/>
+  <circle cx="124" cy="100" r="4.5" fill="#1F2933"/>
+  <path d="M97 116c7 7 19 7 26 0" fill="none" stroke="#1F2933" stroke-width="3.5" stroke-linecap="round"/>
+  <circle cx="88" cy="112" r="5" fill="#F2A7A0" opacity=".6"/>
+  <circle cx="132" cy="112" r="5" fill="#F2A7A0" opacity=".6"/>
+  <!-- buku biru di tangan -->
+  <g transform="rotate(-8 150 186)">
+    <rect x="124" y="162" width="52" height="44" rx="4" fill="#2F6FDE"/>
+    <rect x="128" y="166" width="44" height="36" rx="2" fill="none" stroke="#DCE8FC" stroke-width="2"/>
+    <path d="M136 178h28M136 186h20" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+  </g>
+  <!-- tangan -->
+  <circle cx="130" cy="196" r="9" fill="#F7D2B0"/>
+</svg>

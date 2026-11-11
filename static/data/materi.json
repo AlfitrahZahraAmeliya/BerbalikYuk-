@@ -1,0 +1,183 @@
+{
+  "prasyarat": {
+    "judul": "Cek Prasyarat",
+    "ringkas": "5 soal perkalian, pembagian, dan pecahan",
+    "layar": [
+      {
+        "tipe": "teks",
+        "judul": "Pemanasan dulu, yuk!",
+        "isi": "<p>Sebelum belajar, kita cek dulu kemampuan <b>perkalian</b>, <b>pembagian</b>, dan <b>pecahan</b>.</p><p>Ada 5 soal singkat. Tenang, ini bukan ujian.</p>"
+      },
+      {
+        "tipe": "prasyarat",
+        "soal": [
+          { "teks": "6 × 12 = ...", "kunci": 72, "pengingat": "Perkalian: 6 × 12 sama dengan 6 × 10 + 6 × 2 = 60 + 12 = 72." },
+          { "teks": "15 × 8 = ...", "kunci": 120, "pengingat": "Perkalian: 15 × 8 = 10 × 8 + 5 × 8 = 80 + 40 = 120." },
+          { "teks": "84 : 7 = ...", "kunci": 12, "pengingat": "Pembagian: cari angka yang jika dikali 7 hasilnya 84. Karena 7 × 12 = 84, jawabannya 12." },
+          { "teks": "180 : 12 = ...", "kunci": 15, "pengingat": "Pembagian: 12 × 15 = 180, jadi 180 : 12 = 15." },
+          { "teks": "Pecahan 6/9 jika disederhanakan menjadi ...", "pilihan": ["2/3", "3/2", "1/3", "6/3"], "kunci": "2/3", "pengingat": "Pecahan: bagi pembilang dan penyebut dengan 3. 6 : 3 = 2 dan 9 : 3 = 3, jadi 6/9 = 2/3." }
+        ]
+      }
+    ]
+  },
+  "1": {
+    "judul": "Pengertian Perbandingan Berbalik Nilai",
+    "ringkas": "Apa itu perbandingan berbalik nilai?",
+    "layar": [
+      {
+        "tipe": "teks",
+        "kartuJudul": "Apa itu Perbandingan Berbalik Nilai?",
+        "isi": "<p>Perbandingan berbalik nilai adalah hubungan dua besaran. Jika satu besaran <b>bertambah</b>, besaran lainnya <b>berkurang</b>.</p>",
+        "contoh": "Semakin banyak pekerja, waktu pengerjaan semakin sedikit.",
+        "gambar": "/static/img/pekerja.svg"
+      },
+      {
+        "tipe": "teks",
+        "judul": "Ada di sekitar kita",
+        "isi": "<ul><li><b>Pekerja</b> bertambah → <b>waktu</b> selesai berkurang</li><li><b>Kecepatan</b> bertambah → <b>waktu</b> tempuh berkurang</li><li><b>Ternak</b> bertambah → <b>persediaan pakan</b> lebih cepat habis</li></ul>"
+      },
+      {
+        "tipe": "pertanyaan",
+        "pertanyaan": "5 anak berbagi sekotak kue. Jika anaknya menjadi 10, kue yang didapat tiap anak menjadi ...",
+        "opsi": ["Lebih banyak", "Lebih sedikit", "Sama saja"],
+        "kunci": 1,
+        "penjelasan": "Anak bertambah, bagian tiap anak berkurang. Satu naik, yang lain turun. Itulah berbalik nilai!"
+      }
+    ]
+  },
+  "2": {
+    "judul": "Ciri-Ciri Perbandingan Berbalik Nilai",
+    "ringkas": "Cara mengenali berbalik nilai",
+    "layar": [
+      {
+        "tipe": "ciri",
+        "judul": "Ciri-cirinya",
+        "daftar": ["Satu besaran naik, yang lain turun", "Hasil kali kedua besaran selalu tetap", "Menggunakan rumus:"],
+        "rumus": "a₁ × b₁ = a₂ × b₂"
+      },
+      {
+        "tipe": "tabel",
+        "judul": "Coba lihat tabel ini",
+        "isi": "<p>Sebuah pekerjaan dikerjakan oleh jumlah pekerja yang berbeda-beda.</p>",
+        "kepala": ["Pekerja", "Hari", "Pekerja × Hari"],
+        "baris": [[2, 12, 24], [4, 6, 24], [8, 3, 24]],
+        "sorotKolom": 2,
+        "catatan": "Pekerja naik, hari turun. Hasil kalinya selalu 24."
+      },
+      {
+        "tipe": "pertanyaan",
+        "pertanyaan": "Mana yang merupakan ciri perbandingan berbalik nilai?",
+        "opsi": ["Hasil kali kedua besaran tetap", "Hasil bagi kedua besaran tetap", "Kedua besaran sama-sama naik"],
+        "kunci": 0,
+        "penjelasan": "Pada berbalik nilai, hasil kalinya tetap. Hasil bagi yang tetap adalah ciri perbandingan senilai."
+      }
+    ]
+  },
+  "3": {
+    "judul": "Hubungan Dua Besaran",
+    "ringkas": "Mengapa hubungannya terbalik? Coba simulasinya",
+    "layar": [
+      {
+        "tipe": "teks",
+        "kartuJudul": "Mengapa terbalik?",
+        "isi": "<p>Sebuah rumah butuh <b>72 hari kerja</b> jika dikerjakan 1 orang.</p><p>Jika dikerjakan lebih banyak orang, pekerjaannya dibagi. Tiap orang bekerja lebih sedikit hari.</p>",
+        "gambar": "/static/img/pekerja.svg"
+      },
+      {
+        "tipe": "simulasi",
+        "total": 72,
+        "nilai": [1, 2, 3, 4, 6, 8, 9, 12, 18, 24],
+        "awal": 6
+      },
+      {
+        "tipe": "pertanyaan",
+        "pertanyaan": "Apa yang kamu perhatikan dari kolom Pekerja × Hari?",
+        "opsi": ["Hasilnya selalu sama, yaitu 72", "Hasilnya makin besar", "Hasilnya makin kecil"],
+        "kunci": 0,
+        "penjelasan": "Benar, hasil kalinya tetap 72. Karena itu, jika pekerja dikali 2, harinya harus dibagi 2."
+      }
+    ]
+  },
+  "4": {
+    "judul": "Tabel Perbandingan",
+    "ringkas": "Menyusun informasi soal ke tabel",
+    "layar": [
+      {
+        "tipe": "teks",
+        "judul": "Susun ke tabel dulu",
+        "isi": "<p>Agar angka tidak tertukar, masukkan informasi soal ke tabel:</p><ul><li><b>a</b> = besaran pertama, <b>b</b> = besaran kedua</li><li>Baris <b>1</b> = keadaan awal</li><li>Baris <b>2</b> = keadaan baru</li></ul>"
+      },
+      {
+        "tipe": "susun",
+        "soal": "4 pekerja menyelesaikan pekerjaan dalam 12 hari. Jika ada 6 pekerja, berapa hari?",
+        "label": { "a": "pekerja", "b": "hari" },
+        "angka": [4, 12, 6],
+        "target": { "a1": 4, "b1": 12, "a2": 6 }
+      },
+      {
+        "tipe": "susun",
+        "soal": "Persediaan pakan cukup untuk 20 ayam selama 30 hari. Jika ayamnya 40 ekor, berapa hari pakan itu cukup?",
+        "label": { "a": "ayam", "b": "hari" },
+        "angka": [30, 40, 20],
+        "target": { "a1": 20, "b1": 30, "a2": 40 }
+      }
+    ]
+  },
+  "5": {
+    "judul": "Rumus dan Penerapannya",
+    "ringkas": "Menghitung dengan a₁ × b₁ = a₂ × b₂",
+    "layar": [
+      {
+        "tipe": "ciri",
+        "judul": "Rumusnya",
+        "daftar": ["Hasil kalinya tetap, jadi hasil kali awal = hasil kali baru"],
+        "rumus": "a₁ × b₁ = a₂ × b₂"
+      },
+      {
+        "tipe": "teks",
+        "judul": "Cara memakainya",
+        "isi": "<p>4 pekerja → 12 hari. 6 pekerja → ?</p><div class=\"kotak-rumus\">4 × 12 = 6 × b₂</div><p class=\"baris-hitung\">48 = 6 × b₂<br>b₂ = 48 : 6 = <b>8 hari</b></p>"
+      },
+      {
+        "tipe": "hitung",
+        "soal": "5 pekerja menyelesaikan pagar dalam 8 hari. Berapa hari jika dikerjakan 10 pekerja?",
+        "label": { "a": "pekerja", "b": "hari" },
+        "nilai": { "a1": 5, "b1": 8, "a2": 10 },
+        "kunci": 4,
+        "satuan": "hari",
+        "petunjuk": "5 × 8 = 10 × b₂ → 40 = 10 × b₂ → b₂ = 40 : 10"
+      },
+      {
+        "tipe": "teks",
+        "judul": "Bentuk di buku catatanmu",
+        "isi": "<p>Di buku, rumusnya mungkin ditulis begini:</p><div class=\"kotak-rumus\">a₁ / a₂ = b₂ / b₁</div><p>Jika dikali silang, hasilnya <b>a₁ × b₁ = a₂ × b₂</b>. Keduanya sama! Pakai yang paling mudah bagimu.</p>"
+      }
+    ]
+  },
+  "6": {
+    "judul": "Perbedaan dengan Perbandingan Senilai",
+    "ringkas": "Senilai atau berbalik nilai?",
+    "layar": [
+      {
+        "tipe": "banding",
+        "judul": "Senilai vs Berbalik Nilai",
+        "kiri": { "judul": "Senilai", "arah": "Satu naik, yang lain ikut naik", "tetap": "Hasil bagi tetap", "contoh": "Buku makin banyak → harga makin mahal" },
+        "kanan": { "judul": "Berbalik nilai", "arah": "Satu naik, yang lain turun", "tetap": "Hasil kali tetap", "contoh": "Pekerja makin banyak → waktu makin sedikit" }
+      },
+      {
+        "tipe": "kuis-jenis",
+        "judul": "Senilai atau berbalik nilai?",
+        "soal": [
+          { "teks": "Semakin banyak buku yang dibeli, semakin besar harganya.", "kunci": "senilai", "alasan": "Buku bertambah, harga ikut bertambah." },
+          { "teks": "Semakin banyak pekerja, semakin cepat bangunan selesai.", "kunci": "berbalik", "alasan": "Pekerja bertambah, waktu berkurang." },
+          { "teks": "Semakin cepat laju motor, semakin singkat waktu tempuhnya.", "kunci": "berbalik", "alasan": "Kecepatan bertambah, waktu berkurang." },
+          { "teks": "Semakin banyak bensin, semakin jauh jarak yang bisa ditempuh mobil.", "kunci": "senilai", "alasan": "Bensin bertambah, jarak ikut bertambah." },
+          { "teks": "Semakin banyak ayam, semakin cepat persediaan pakan habis.", "kunci": "berbalik", "alasan": "Ayam bertambah, lama pakan bertahan berkurang." },
+          { "teks": "Semakin banyak kue yang dibuat, semakin banyak tepung yang diperlukan.", "kunci": "senilai", "alasan": "Kue bertambah, tepung ikut bertambah." },
+          { "teks": "Semakin banyak keran yang dibuka, semakin singkat waktu mengisi bak.", "kunci": "berbalik", "alasan": "Keran bertambah, waktu berkurang." },
+          { "teks": "Semakin banyak anak berbagi sekotak permen, semakin sedikit permen tiap anak.", "kunci": "berbalik", "alasan": "Anak bertambah, bagian tiap anak berkurang." }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,63 @@
+[
+  {
+    "judul": "Contoh 1",
+    "keterangan": "Dibahas lengkap",
+    "soal": "Suatu pekerjaan dapat diselesaikan oleh 4 pekerja dalam 12 hari. Jika pekerjaan tersebut dikerjakan oleh 6 pekerja, berapa hari waktu yang diperlukan?",
+    "langkah": [
+      { "judul": "Diketahui", "isi": "4 pekerja → 12 hari<br>6 pekerja → ?" },
+      { "judul": "Ditanya", "isi": "Waktu untuk 6 pekerja (b₂)" },
+      { "judul": "Tentukan hubungan", "isi": "Semakin banyak pekerja, waktu semakin sedikit → <b>berbalik nilai</b>." },
+      { "judul": "Gunakan rumus", "isi": "<div class=\"kotak-rumus\">a₁ × b₁ = a₂ × b₂</div><p class=\"baris-hitung\">4 × 12 = 6 × b₂</p>" },
+      { "judul": "Hitung", "isi": "<p class=\"baris-hitung\">48 = 6 × b₂<br>b₂ = 48 : 6 = 8</p>" },
+      { "judul": "Kesimpulan & cek", "kesimpulan": "Jadi, waktu yang diperlukan oleh 6 pekerja adalah 8 hari.", "isi": "Masuk akal? Pekerja bertambah (4 → 6), hari berkurang (12 → 8). ✓" }
+    ]
+  },
+  {
+    "judul": "Contoh 2",
+    "keterangan": "Kamu mengisi langkah 5–6",
+    "soal": "Persediaan rumput cukup untuk 150 ekor domba selama 12 hari. Jika dombanya menjadi 100 ekor, berapa hari persediaan rumput itu cukup?",
+    "langkah": [
+      { "judul": "Diketahui", "isi": "150 domba → 12 hari<br>100 domba → ?" },
+      { "judul": "Ditanya", "isi": "Lama persediaan untuk 100 domba (b₂)" },
+      { "judul": "Tentukan hubungan", "isi": "Domba berkurang, rumput habis lebih lama → <b>berbalik nilai</b>." },
+      { "judul": "Gunakan rumus", "isi": "<div class=\"kotak-rumus\">a₁ × b₁ = a₂ × b₂</div><p class=\"baris-hitung\">150 × 12 = 100 × b₂<br>1.800 = 100 × b₂</p>" },
+      {
+        "judul": "Hitung",
+        "isi": "b₂ = 1.800 : 100 = ...",
+        "isian": { "tipe": "angka", "label": "b₂", "satuan": "hari", "kunci": 18, "petunjuk": "Bagi 1.800 dengan 100. Coret dua angka nol." }
+      },
+      {
+        "judul": "Kesimpulan & cek",
+        "kesimpulan": "Jadi, persediaan rumput cukup untuk 18 hari.",
+        "isi": "Domba berkurang (150 → 100). Harinya ...",
+        "isian": { "tipe": "pilihan", "opsi": ["bertambah", "berkurang"], "kunci": "bertambah", "petunjuk": "Pada berbalik nilai, jika satu berkurang, yang lain bertambah." }
+      }
+    ]
+  },
+  {
+    "judul": "Contoh 3",
+    "keterangan": "Kamu mengisi langkah 4–6",
+    "soal": "Sebuah bak air dapat diisi penuh oleh 10 keran dalam 9 jam. Jika memakai 15 keran, berapa jam bak itu penuh?",
+    "langkah": [
+      { "judul": "Diketahui", "isi": "10 keran → 9 jam<br>15 keran → ?" },
+      { "judul": "Ditanya", "isi": "Waktu untuk 15 keran (b₂)" },
+      { "judul": "Tentukan hubungan", "isi": "Keran bertambah, waktu berkurang → <b>berbalik nilai</b>." },
+      {
+        "judul": "Gunakan rumus",
+        "isi": "<div class=\"kotak-rumus\">a₁ × b₁ = a₂ × b₂</div><p class=\"baris-hitung\">10 × 9 = 15 × b₂</p>Berapa hasil 10 × 9?",
+        "isian": { "tipe": "angka", "label": "10 × 9", "satuan": "", "kunci": 90, "petunjuk": "10 × 9 = 9 puluhan." }
+      },
+      {
+        "judul": "Hitung",
+        "isi": "90 = 15 × b₂ → b₂ = 90 : 15 = ...",
+        "isian": { "tipe": "angka", "label": "b₂", "satuan": "jam", "kunci": 6, "petunjuk": "15 × berapa = 90? Coba 15 × 6." }
+      },
+      {
+        "judul": "Kesimpulan & cek",
+        "kesimpulan": "Jadi, dengan 15 keran bak penuh dalam 6 jam.",
+        "isi": "Keran bertambah (10 → 15). Waktunya ...",
+        "isian": { "tipe": "pilihan", "opsi": ["bertambah", "berkurang"], "kunci": "berkurang", "petunjuk": "Lebih banyak keran, air masuk lebih cepat." }
+      }
+    ]
+  }
+]

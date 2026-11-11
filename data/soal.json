@@ -1,0 +1,249 @@
+[
+  {
+    "id": "L1-01", "tingkat": "mudah", "tipe": "pilihan_ganda", "jenis": "berbalik",
+    "teks": "4 pekerja menyelesaikan pekerjaan dalam 15 hari. Berapa hari jika dikerjakan 6 pekerja?",
+    "label": { "a": "pekerja", "b": "hari" }, "satuan": "hari",
+    "nilai": { "a1": 4, "b1": 15, "a2": 6 }, "ditanya": "b2", "kunci": 10,
+    "opsi": [
+      { "nilai": 10 },
+      { "nilai": 22.5, "jenis": "salah_jenis" },
+      { "nilai": 60, "jenis": "salah_hitung", "pesan": "Kamu baru menghitung 4 × 15 = 60. Jangan lupa membaginya dengan 6, ya." },
+      { "nilai": 13, "jenis": "lainnya", "pesan": "Hubungannya bukan dikurangi selisih (6 − 4 = 2), tetapi hasil kalinya tetap." }
+    ],
+    "hint": [
+      "Jika pekerjanya bertambah, waktunya jadi lebih lama atau lebih cepat?",
+      "a₁ = 4, b₁ = 15, a₂ = 6. Hitung 4 × 15 dulu.",
+      "Contoh mirip: 4 pekerja 12 hari → 6 pekerja: 4 × 12 = 6 × b₂ → b₂ = 48 : 6 = 8 hari."
+    ],
+    "pembahasan": "4 × 15 = 6 × b₂ → 60 = 6 × b₂ → b₂ = 60 : 6 = 10 hari. Pekerja bertambah, hari berkurang. Masuk akal!"
+  },
+  {
+    "id": "L1-02", "tingkat": "mudah", "tipe": "pilihan_ganda", "jenis": "berbalik",
+    "teks": "Dengan kecepatan 60 km/jam, sebuah perjalanan ditempuh dalam 3 jam. Berapa jam jika kecepatannya 90 km/jam?",
+    "label": { "a": "kecepatan", "b": "waktu" }, "satuan": "jam",
+    "nilai": { "a1": 60, "b1": 3, "a2": 90 }, "ditanya": "b2", "kunci": 2,
+    "opsi": [
+      { "nilai": 2 },
+      { "nilai": 4.5, "jenis": "salah_jenis" },
+      { "nilai": 180, "jenis": "salah_hitung", "pesan": "60 × 3 = 180 adalah jaraknya. Bagi dengan kecepatan baru (90) untuk mendapat waktunya." },
+      { "nilai": 3, "jenis": "lainnya", "pesan": "Waktunya tidak tetap. Jika lebih cepat, waktunya lebih singkat. Yang tetap adalah hasil kalinya." }
+    ],
+    "hint": [
+      "Jika kendaraan melaju lebih cepat, waktunya lebih lama atau lebih singkat?",
+      "a₁ = 60, b₁ = 3, a₂ = 90. Hitung 60 × 3 dulu.",
+      "Contoh mirip: 40 km/jam selama 3 jam → 60 km/jam: 40 × 3 = 60 × b₂ → b₂ = 120 : 60 = 2 jam."
+    ],
+    "pembahasan": "60 × 3 = 90 × b₂ → 180 = 90 × b₂ → b₂ = 180 : 90 = 2 jam. Kecepatan bertambah, waktu berkurang. Masuk akal!"
+  },
+  {
+    "id": "L1-03", "tingkat": "mudah", "tipe": "pilihan_ganda", "jenis": "berbalik",
+    "teks": "8 keran mengisi sebuah kolam dalam 6 jam. Berapa jam jika memakai 12 keran?",
+    "label": { "a": "keran", "b": "waktu" }, "satuan": "jam",
+    "nilai": { "a1": 8, "b1": 6, "a2": 12 }, "ditanya": "b2", "kunci": 4,
+    "opsi": [
+      { "nilai": 4 },
+      { "nilai": 9, "jenis": "salah_jenis" },
+      { "nilai": 48, "jenis": "salah_hitung", "pesan": "Kamu baru menghitung 8 × 6 = 48. Jangan lupa membaginya dengan 12, ya." },
+      { "nilai": 2, "jenis": "lainnya", "pesan": "Hubungannya bukan dikurangi selisih (12 − 8 = 4), tetapi hasil kalinya tetap." }
+    ],
+    "hint": [
+      "Jika kerannya lebih banyak, kolam penuh lebih lama atau lebih cepat?",
+      "a₁ = 8, b₁ = 6, a₂ = 12. Hitung 8 × 6 dulu.",
+      "Contoh mirip: 6 keran 4 jam → 8 keran: 6 × 4 = 8 × b₂ → b₂ = 24 : 8 = 3 jam."
+    ],
+    "pembahasan": "8 × 6 = 12 × b₂ → 48 = 12 × b₂ → b₂ = 48 : 12 = 4 jam. Keran bertambah, waktu berkurang. Masuk akal!"
+  },
+  {
+    "id": "L1-04", "tingkat": "mudah", "tipe": "pilihan_ganda", "jenis": "berbalik",
+    "teks": "Persediaan pakan cukup untuk 20 ekor ayam selama 30 hari. Berapa hari pakan itu cukup jika ayamnya 40 ekor?",
+    "label": { "a": "ayam", "b": "hari" }, "satuan": "hari",
+    "nilai": { "a1": 20, "b1": 30, "a2": 40 }, "ditanya": "b2", "kunci": 15,
+    "opsi": [
+      { "nilai": 15 },
+      { "nilai": 60, "jenis": "salah_jenis" },
+      { "nilai": 600, "jenis": "salah_hitung", "pesan": "Kamu baru menghitung 20 × 30 = 600. Jangan lupa membaginya dengan 40, ya." },
+      { "nilai": 10, "jenis": "lainnya", "pesan": "Hubungannya bukan dikurangi selisih, tetapi hasil kalinya tetap." }
+    ],
+    "hint": [
+      "Jika ayamnya lebih banyak, pakan habis lebih cepat atau lebih lama?",
+      "a₁ = 20, b₁ = 30, a₂ = 40. Hitung 20 × 30 dulu.",
+      "Contoh mirip: 10 ayam 12 hari → 20 ayam: 10 × 12 = 20 × b₂ → b₂ = 120 : 20 = 6 hari."
+    ],
+    "pembahasan": "20 × 30 = 40 × b₂ → 600 = 40 × b₂ → b₂ = 600 : 40 = 15 hari. Ayam bertambah, hari berkurang. Masuk akal!"
+  },
+  {
+    "id": "L1-05", "tingkat": "mudah", "tipe": "pilihan_ganda", "jenis": "berbalik",
+    "teks": "5 mesin menyelesaikan pesanan dalam 12 jam. Berapa jam jika hanya 3 mesin yang bekerja?",
+    "label": { "a": "mesin", "b": "waktu" }, "satuan": "jam",
+    "nilai": { "a1": 5, "b1": 12, "a2": 3 }, "ditanya": "b2", "kunci": 20,
+    "opsi": [
+      { "nilai": 20 },
+      { "nilai": 7.2, "jenis": "salah_jenis" },
+      { "nilai": 60, "jenis": "salah_hitung", "pesan": "Kamu baru menghitung 5 × 12 = 60. Jangan lupa membaginya dengan 3, ya." },
+      { "nilai": 14, "jenis": "lainnya", "pesan": "Hubungannya bukan ditambah selisih (5 − 3 = 2), tetapi hasil kalinya tetap." }
+    ],
+    "hint": [
+      "Jika mesinnya berkurang, pesanan selesai lebih cepat atau lebih lama?",
+      "a₁ = 5, b₁ = 12, a₂ = 3. Hitung 5 × 12 dulu.",
+      "Contoh mirip: 4 mesin 6 jam → 3 mesin: 4 × 6 = 3 × b₂ → b₂ = 24 : 3 = 8 jam."
+    ],
+    "pembahasan": "5 × 12 = 3 × b₂ → 60 = 3 × b₂ → b₂ = 60 : 3 = 20 jam. Mesin berkurang, waktu bertambah. Masuk akal!"
+  },
+  {
+    "id": "L1-06", "tingkat": "mudah", "tipe": "pilihan_ganda", "jenis": "berbalik",
+    "teks": "Sebuah pekerjaan dapat diselesaikan 3 pekerja dalam 18 hari. Jika dikerjakan 6 pekerja, berapa hari waktu yang diperlukan?",
+    "label": { "a": "pekerja", "b": "hari" }, "satuan": "hari",
+    "nilai": { "a1": 3, "b1": 18, "a2": 6 }, "ditanya": "b2", "kunci": 9,
+    "opsi": [
+      { "nilai": 9 },
+      { "nilai": 36, "jenis": "salah_jenis" },
+      { "nilai": 54, "jenis": "salah_hitung", "pesan": "Kamu baru menghitung 3 × 18 = 54. Jangan lupa membaginya dengan 6, ya." },
+      { "nilai": 15, "jenis": "lainnya", "pesan": "Hubungannya bukan dikurangi selisih (6 − 3 = 3), tetapi hasil kalinya tetap." }
+    ],
+    "hint": [
+      "Jika pekerjanya bertambah, waktunya jadi lebih lama atau lebih cepat?",
+      "a₁ = 3, b₁ = 18, a₂ = 6. Hitung 3 × 18 dulu.",
+      "Contoh mirip: 4 pekerja 12 hari → 6 pekerja: 4 × 12 = 6 × b₂ → b₂ = 48 : 6 = 8 hari."
+    ],
+    "pembahasan": "3 × 18 = 6 × b₂ → 54 = 6 × b₂ → b₂ = 54 : 6 = 9 hari. Pekerja bertambah, hari berkurang. Masuk akal!"
+  },
+
+  {
+    "id": "L2-01", "tingkat": "sedang", "tipe": "isian", "jenis": "berbalik",
+    "teks": "Sebuah rumah dibangun oleh 12 tukang dalam 20 hari. Agar selesai dalam 15 hari, berapa tukang yang dibutuhkan?",
+    "label": { "a": "tukang", "b": "hari" }, "satuan": "tukang",
+    "nilai": { "a1": 12, "b1": 20, "b2": 15 }, "ditanya": "a2", "kunci": 16,
+    "hint": [
+      "Agar lebih cepat selesai, tukangnya perlu ditambah atau dikurangi?",
+      "Kali ini yang ditanya a₂ (jumlah tukang). a₁ = 12, b₁ = 20, b₂ = 15.",
+      "Contoh mirip: 6 orang 10 hari, agar 5 hari: 6 × 10 = a₂ × 5 → a₂ = 60 : 5 = 12 orang."
+    ],
+    "pembahasan": "12 × 20 = a₂ × 15 → 240 = a₂ × 15 → a₂ = 240 : 15 = 16 tukang. Hari berkurang, tukang bertambah. Masuk akal!"
+  },
+  {
+    "id": "L2-02", "tingkat": "sedang", "tipe": "isian", "jenis": "berbalik",
+    "teks": "Beras Bu Sari cukup untuk 6 orang selama 10 hari. Lalu 4 tamu datang menginap. Berapa hari beras itu cukup?",
+    "label": { "a": "orang", "b": "hari" }, "satuan": "hari",
+    "nilai": { "a1": 6, "b1": 10, "a2": 10 }, "ditanya": "b2", "kunci": 6,
+    "jawabanSalah": [
+      { "nilai": 15, "jenis": "salah_baca", "pesan": "Baca lagi: 4 tamu datang. Jadi jumlah orang menjadi 6 + 4 = 10, bukan 4." }
+    ],
+    "hint": [
+      "Jika orangnya bertambah, beras habis lebih cepat atau lebih lama?",
+      "Ada 6 orang, lalu 4 tamu datang. Berapa jumlah orang sekarang? Itu a₂.",
+      "Contoh mirip: makanan cukup untuk 4 orang 6 hari, lalu 2 orang datang (jadi 6 orang): 4 × 6 = 6 × b₂ → b₂ = 4 hari."
+    ],
+    "pembahasan": "a₂ = 6 + 4 = 10 orang. 6 × 10 = 10 × b₂ → 60 = 10 × b₂ → b₂ = 6 hari. Orang bertambah, hari berkurang. Masuk akal!"
+  },
+  {
+    "id": "L2-03", "tingkat": "sedang", "tipe": "isian", "jenis": "berbalik",
+    "teks": "Dengan kecepatan 50 km/jam, Ayah tiba di kota dalam 4 jam. Agar tiba dalam 2,5 jam, berapa kecepatan yang diperlukan?",
+    "label": { "a": "kecepatan", "b": "waktu" }, "satuan": "km/jam",
+    "nilai": { "a1": 50, "b1": 4, "b2": 2.5 }, "ditanya": "a2", "kunci": 80,
+    "hint": [
+      "Agar tiba lebih cepat, kecepatannya perlu ditambah atau dikurangi?",
+      "Yang ditanya a₂ (kecepatan). a₁ = 50, b₁ = 4, b₂ = 2,5.",
+      "Contoh mirip: 40 km/jam selama 3 jam, agar 2 jam: 40 × 3 = a₂ × 2 → a₂ = 120 : 2 = 60 km/jam."
+    ],
+    "pembahasan": "50 × 4 = a₂ × 2,5 → 200 = a₂ × 2,5 → a₂ = 200 : 2,5 = 80 km/jam. Waktu berkurang, kecepatan bertambah. Masuk akal!"
+  },
+  {
+    "id": "L2-04", "tingkat": "sedang", "tipe": "isian", "jenis": "berbalik",
+    "teks": "Kursi di aula disusun 15 baris, tiap baris 24 kursi. Jika tiap baris diisi 18 kursi, berapa baris yang terbentuk?",
+    "label": { "a": "kursi per baris", "b": "baris" }, "satuan": "baris",
+    "nilai": { "a1": 24, "b1": 15, "a2": 18 }, "ditanya": "b2", "kunci": 20,
+    "hint": [
+      "Jika tiap baris berisi lebih sedikit kursi, jumlah barisnya bertambah atau berkurang?",
+      "a = kursi per baris, b = jumlah baris. a₁ = 24, b₁ = 15, a₂ = 18.",
+      "Contoh mirip: 10 baris × 12 kursi, jika 8 kursi per baris: 12 × 10 = 8 × b₂ → b₂ = 120 : 8 = 15 baris."
+    ],
+    "pembahasan": "24 × 15 = 18 × b₂ → 360 = 18 × b₂ → b₂ = 360 : 18 = 20 baris. Kursi per baris berkurang, baris bertambah. Masuk akal!"
+  },
+  {
+    "id": "L2-05", "tingkat": "sedang", "tipe": "isian", "jenis": "senilai",
+    "teks": "Harga 3 buku tulis adalah Rp12.000. Berapa harga 5 buku tulis yang sama?",
+    "label": { "a": "buku", "b": "harga" }, "satuan": "rupiah",
+    "nilai": { "a1": 3, "b1": 12000, "a2": 5 }, "ditanya": "b2", "kunci": 20000,
+    "hint": [
+      "Jika bukunya lebih banyak, harganya lebih mahal atau lebih murah?",
+      "Keduanya sama-sama bertambah, jadi ini perbandingan senilai. Hitung dulu harga 1 buku.",
+      "Harga 1 buku = 12.000 : 3. Lalu kalikan dengan 5."
+    ],
+    "pembahasan": "Ini perbandingan SENILAI. Harga 1 buku = 12.000 : 3 = Rp4.000. Harga 5 buku = 5 × 4.000 = Rp20.000. Buku bertambah, harga bertambah. Masuk akal!"
+  },
+
+  {
+    "id": "L3-01", "tingkat": "sulit", "tipe": "isian", "jenis": "berbalik",
+    "teks": "Proyek jalan desa dikerjakan oleh 30 orang dan direncanakan selesai dalam 40 hari. Setelah 10 hari bekerja, 10 orang dipindahkan ke proyek lain. Berapa hari lagi sisa pekerjaan itu selesai?",
+    "label": { "a": "orang", "b": "hari" }, "satuan": "hari",
+    "nilai": { "a1": 30, "b1": 30, "a2": 20 }, "ditanya": "b2", "kunci": 45,
+    "jawabanSalah": [
+      { "nilai": 60, "jenis": "salah_baca", "pesan": "Pekerjaan sudah berjalan 10 hari. Sisa waktunya 40 − 10 = 30 hari untuk 30 orang. Pakai 30 sebagai b₁." },
+      { "nilai": 90, "jenis": "salah_baca", "pesan": "Yang dipindahkan 10 orang, jadi yang tersisa 30 − 10 = 20 orang. Pakai 20 sebagai a₂." }
+    ],
+    "hint": [
+      "Setelah 10 hari, berapa hari sisa rencana kerjanya? Itu b₁ yang baru.",
+      "Sisa: 30 orang untuk 40 − 10 = 30 hari. Lalu orangnya menjadi 30 − 10 = 20.",
+      "Contoh mirip: 20 orang 30 hari, setelah 10 hari 4 orang pergi: 20 × 20 = 16 × b₂ → b₂ = 400 : 16 = 25 hari."
+    ],
+    "pembahasan": "Sisa pekerjaan: 30 orang × 30 hari. Orang menjadi 20. 30 × 30 = 20 × b₂ → 900 = 20 × b₂ → b₂ = 45 hari. Orang berkurang, hari bertambah. Masuk akal! Informasi '40 hari' dipakai untuk mencari sisa waktu."
+  },
+  {
+    "id": "L3-02", "tingkat": "sulit", "tipe": "isian", "jenis": "berbalik",
+    "teks": "Pak Budi membeli rumput seharga Rp2.000.000. Rumput itu cukup untuk 150 ekor domba selama 12 hari. Kemudian 30 domba dijual. Berapa hari rumput itu cukup?",
+    "label": { "a": "domba", "b": "hari" }, "satuan": "hari",
+    "nilai": { "a1": 150, "b1": 12, "a2": 120 }, "ditanya": "b2", "kunci": 15,
+    "jawabanSalah": [
+      { "nilai": 60, "jenis": "salah_baca", "pesan": "Baca lagi: 30 domba dijual. Berapa domba yang tersisa? Itu a₂." }
+    ],
+    "hint": [
+      "Harga rumput tidak dipakai. Fokus pada jumlah domba dan hari.",
+      "a₁ = 150, b₁ = 12. Setelah 30 dijual, a₂ = 150 − 30 = ...",
+      "Contoh mirip: 150 domba 12 hari → 100 domba: 150 × 12 = 100 × b₂ → b₂ = 1.800 : 100 = 18 hari."
+    ],
+    "pembahasan": "a₂ = 150 − 30 = 120 domba. 150 × 12 = 120 × b₂ → 1.800 = 120 × b₂ → b₂ = 15 hari. Domba berkurang, hari bertambah. Masuk akal! Harga rumput adalah informasi tambahan yang tidak dipakai."
+  },
+  {
+    "id": "L3-03", "tingkat": "sulit", "tipe": "isian", "jenis": "berbalik",
+    "teks": "Sebuah asrama berisi 40 siswa dengan persediaan beras untuk 18 hari. Setelah 6 hari, 8 siswa pulang kampung. Berapa hari sisa beras akan habis?",
+    "label": { "a": "siswa", "b": "hari" }, "satuan": "hari",
+    "nilai": { "a1": 40, "b1": 12, "a2": 32 }, "ditanya": "b2", "kunci": 15,
+    "jawabanSalah": [
+      { "nilai": 22.5, "jenis": "salah_baca", "pesan": "Beras sudah dipakai 6 hari. Sisanya cukup untuk 18 − 6 = 12 hari bagi 40 siswa. Pakai 12 sebagai b₁." },
+      { "nilai": 60, "jenis": "salah_baca", "pesan": "8 siswa pulang, jadi yang tinggal 40 − 8 = 32 siswa. Pakai 32 sebagai a₂." }
+    ],
+    "hint": [
+      "Setelah 6 hari, sisa beras cukup untuk berapa hari bagi 40 siswa?",
+      "Sisa: 40 siswa untuk 18 − 6 = 12 hari. Lalu siswa menjadi 40 − 8 = 32.",
+      "Contoh mirip: 30 anak 10 hari, setelah 4 hari 10 anak pulang: 30 × 6 = 20 × b₂ → b₂ = 9 hari."
+    ],
+    "pembahasan": "Sisa beras: 40 siswa × 12 hari. Siswa menjadi 32. 40 × 12 = 32 × b₂ → 480 = 32 × b₂ → b₂ = 15 hari. Siswa berkurang, hari bertambah. Masuk akal!"
+  },
+  {
+    "id": "L3-04", "tingkat": "sulit", "tipe": "isian", "jenis": "berbalik",
+    "teks": "Kontraktor merencanakan sebuah gedung selesai dalam 60 hari dengan 25 pekerja. Upah tiap pekerja Rp150.000 per hari. Agar selesai dalam 50 hari, berapa tambahan pekerja yang dibutuhkan?",
+    "label": { "a": "pekerja", "b": "hari" }, "satuan": "pekerja",
+    "nilai": { "a1": 25, "b1": 60, "b2": 50 }, "ditanya": "a2", "kunci": 5,
+    "jawabanSalah": [
+      { "nilai": 30, "jenis": "salah_baca", "pesan": "Benar, dibutuhkan 30 pekerja. Tapi yang ditanya TAMBAHAN pekerja: 30 − 25 = ?" }
+    ],
+    "hint": [
+      "Upah tidak dipakai. Perhatikan kata 'tambahan' di pertanyaan.",
+      "Cari dulu a₂: 25 × 60 = a₂ × 50. Lalu kurangi dengan 25.",
+      "Contoh mirip: 10 pekerja 30 hari, agar 20 hari: 10 × 30 = a₂ × 20 → a₂ = 15, tambahan = 15 − 10 = 5 pekerja."
+    ],
+    "pembahasan": "25 × 60 = a₂ × 50 → 1.500 = a₂ × 50 → a₂ = 30 pekerja. Tambahan = 30 − 25 = 5 pekerja. Hari berkurang, pekerja bertambah. Masuk akal! Upah adalah informasi tambahan."
+  },
+  {
+    "id": "L3-05", "tingkat": "sulit", "tipe": "isian", "jenis": "berbalik",
+    "teks": "Rina berangkat ke sekolah pukul 06.30 naik sepeda dengan kecepatan 12 km/jam dan tiba dalam 30 menit. Jika diantar motor dengan kecepatan 36 km/jam, berapa menit perjalanannya?",
+    "label": { "a": "kecepatan", "b": "waktu" }, "satuan": "menit",
+    "nilai": { "a1": 12, "b1": 30, "a2": 36 }, "ditanya": "b2", "kunci": 10,
+    "hint": [
+      "Jam berangkat tidak dipakai. Jika lebih cepat, waktunya lebih lama atau lebih singkat?",
+      "a₁ = 12, b₁ = 30, a₂ = 36. Hitung 12 × 30 dulu.",
+      "Contoh mirip: 10 km/jam 30 menit → 30 km/jam: 10 × 30 = 30 × b₂ → b₂ = 300 : 30 = 10 menit."
+    ],
+    "pembahasan": "12 × 30 = 36 × b₂ → 360 = 36 × b₂ → b₂ = 10 menit. Kecepatan bertambah, waktu berkurang. Masuk akal! Jam berangkat adalah informasi tambahan."
+  }
+]

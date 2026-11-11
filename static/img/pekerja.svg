@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Pekerja berhelm kuning dan jam">
+  <!-- jam -->
+  <circle cx="48" cy="62" r="34" fill="#FFFFFF" stroke="#1F4FA8" stroke-width="6"/>
+  <path d="M48 40v22l14 10" fill="none" stroke="#1F2933" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="48" cy="62" r="4" fill="#1F2933"/>
+  <!-- badan pekerja: rompi kuning di atas baju biru -->
+  <path d="M74 160c0-34 16-52 38-52s38 18 38 52z" fill="#2F6FDE"/>
+  <path d="M90 160v-40c6-7 14-11 22-11s16 4 22 11v40z" fill="#F2C94C"/>
+  <path d="M96 128h32" stroke="#FFFFFF" stroke-width="4"/>
+  <!-- kepala -->
+  <circle cx="112" cy="78" r="22" fill="#F7D2B0"/>
+  <circle cx="104" cy="80" r="3" fill="#1F2933"/>
+  <circle cx="120" cy="80" r="3" fill="#1F2933"/>
+  <path d="M105 90c4 4 10 4 14 0" fill="none" stroke="#1F2933" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- helm -->
+  <path d="M88 72a24 24 0 0 1 48 0z" fill="#F2C94C"/>
+  <rect x="84" y="70" width="56" height="7" rx="3.5" fill="#E0B23A"/>
+  <rect x="108" y="48" width="8" height="10" rx="3" fill="#E0B23A"/>
+</svg>

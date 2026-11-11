@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Trofi">
+  <!-- pegangan -->
+  <path d="M46 40H24v10c0 18 12 30 28 32" fill="none" stroke="#E0B23A" stroke-width="9" stroke-linecap="round"/>
+  <path d="M114 40h22v10c0 18-12 30-28 32" fill="none" stroke="#E0B23A" stroke-width="9" stroke-linecap="round"/>
+  <!-- piala -->
+  <path d="M44 24h72v34c0 22-16 38-36 38S44 80 44 58z" fill="#F2C94C"/>
+  <path d="M60 30v26c0 10 6 18 14 22" fill="none" stroke="#FFF4CC" stroke-width="6" stroke-linecap="round"/>
+  <!-- kaki -->
+  <rect x="72" y="94" width="16" height="22" fill="#E0B23A"/>
+  <rect x="54" y="114" width="52" height="12" rx="4" fill="#F2C94C"/>
+  <rect x="46" y="126" width="68" height="18" rx="5" fill="#1F4FA8"/>
+</svg>

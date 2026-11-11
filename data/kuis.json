@@ -1,0 +1,65 @@
+[
+  {
+    "id": "K-01", "tipe": "pilihan_teks", "tp": ["TP1"],
+    "teks": "Pada perbandingan berbalik nilai, apa yang selalu tetap?",
+    "kunci": "Hasil kali kedua besaran",
+    "opsi": [
+      { "teks": "Hasil kali kedua besaran" },
+      { "teks": "Hasil bagi kedua besaran" },
+      { "teks": "Selisih kedua besaran" },
+      { "teks": "Jumlah kedua besaran" }
+    ],
+    "pembahasan": "Pada perbandingan berbalik nilai, a₁ × b₁ = a₂ × b₂. Hasil kalinya selalu tetap."
+  },
+  {
+    "id": "K-02", "tipe": "jenis", "tp": ["TP2"],
+    "teks": "\"Semakin banyak panitia yang menghias aula, semakin cepat pekerjaan selesai.\" Termasuk perbandingan apa?",
+    "kunci": "berbalik",
+    "pembahasan": "Panitia bertambah, waktu berkurang. Satu naik, yang lain turun → berbalik nilai."
+  },
+  {
+    "id": "K-03", "tipe": "pilihan_ganda", "jenis": "berbalik", "tp": ["TP4"],
+    "teks": "7 penjahit menyelesaikan pesanan seragam dalam 12 hari. Berapa hari jika ada 14 penjahit?",
+    "label": { "a": "penjahit", "b": "hari" }, "satuan": "hari",
+    "nilai": { "a1": 7, "b1": 12, "a2": 14 }, "ditanya": "b2", "kunci": 6,
+    "opsi": [
+      { "nilai": 6 },
+      { "nilai": 24, "jenis": "salah_jenis" },
+      { "nilai": 84, "jenis": "salah_hitung" },
+      { "nilai": 5, "jenis": "lainnya" }
+    ],
+    "pembahasan": "7 × 12 = 14 × b₂ → 84 = 14 × b₂ → b₂ = 6 hari."
+  },
+  {
+    "id": "K-04", "tipe": "isian", "jenis": "berbalik", "tp": ["TP3", "TP4"],
+    "teks": "Sebuah kapal membawa persediaan makanan untuk 25 awak selama 16 hari. Sebelum berangkat, 15 awak lagi ikut berlayar. Berapa hari persediaan itu cukup?",
+    "label": { "a": "awak", "b": "hari" }, "satuan": "hari",
+    "nilai": { "a1": 25, "b1": 16, "a2": 40 }, "ditanya": "b2", "kunci": 10,
+    "jawabanSalah": [
+      { "nilai": 26.67, "jenis": "salah_baca" }
+    ],
+    "pembahasan": "Awak menjadi 25 + 15 = 40. 25 × 16 = 40 × b₂ → 400 = 40 × b₂ → b₂ = 10 hari."
+  },
+  {
+    "id": "K-05", "tipe": "isian", "jenis": "berbalik", "tp": ["TP3", "TP4", "TP5"],
+    "teks": "Sebuah taman kota direncanakan selesai dibangun oleh 18 orang dalam 30 hari. Biaya pembangunannya Rp45.000.000. Setelah 10 hari bekerja, 6 orang ditambahkan. Berapa hari sisa pekerjaan akan selesai?",
+    "label": { "a": "orang", "b": "hari" }, "satuan": "hari",
+    "nilai": { "a1": 18, "b1": 20, "a2": 24 }, "ditanya": "b2", "kunci": 15,
+    "jawabanSalah": [
+      { "nilai": 22.5, "jenis": "salah_baca" }
+    ],
+    "pembahasan": "Sisa pekerjaan: 18 orang × (30 − 10) = 20 hari. Orang menjadi 18 + 6 = 24. 18 × 20 = 24 × b₂ → 360 = 24 × b₂ → b₂ = 15 hari. Biaya tidak dipakai."
+  },
+  {
+    "id": "K-06", "tipe": "pilihan_teks", "tp": ["TP5"],
+    "teks": "Dina menghitung: 6 pekerja menyelesaikan pekerjaan dalam 10 hari, jadi 12 pekerja menyelesaikannya dalam 20 hari. Apakah jawaban Dina masuk akal?",
+    "kunci": "Tidak, pekerja bertambah seharusnya hari berkurang",
+    "opsi": [
+      { "teks": "Tidak, pekerja bertambah seharusnya hari berkurang" },
+      { "teks": "Ya, karena pekerja dan hari sama-sama dikali 2" },
+      { "teks": "Ya, karena 6 × 10 = 60" },
+      { "teks": "Tidak, seharusnya 15 hari" }
+    ],
+    "pembahasan": "Pekerja bertambah, waktunya harus berkurang. Jawaban yang benar: 6 × 10 = 12 × b₂ → b₂ = 5 hari."
+  }
+]
