@@ -84,6 +84,7 @@ async function mulai() {
   window.addEventListener('online', () => {
     state.offline = false;
     kirimAntrean().catch(() => {});
+    if (state.siswa) muatStatusAI();
     document.querySelector('.pita-offline')?.remove();
   });
   window.addEventListener('offline', () => { state.offline = true; tampilkanOffline(); });

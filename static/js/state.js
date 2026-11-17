@@ -8,15 +8,20 @@ export const state = {
   kuisTerakhir: null,
   offline: false,
   // Pembimbing AI (F12). Nama berasal dari server (NAMA_PEMBIMBING).
-  ai: { aktif: false, nama: 'Kak Balik' },
+  ai: { aktif: false, nama: 'Kak Balik', dimuat: false },
 };
 
+/**
+ * Muat status Kak Balik dari server, lalu kabari halaman lewat event 'ai-berubah'
+ * agar tampilan (kartu Beranda, tombol melayang) ikut diperbarui tanpa memuat ulang.
+ */
 export async function muatStatusAI() {
   try {
-    state.ai = await api.statusPembimbing();
+    state.ai = { ...(await api.statusPembimbing()), dimuat: true };
   } catch {
-    state.ai = { ...state.ai, aktif: false };
+    state.ai = { ...state.ai, aktif: false, dimuat: false };
   }
+  window.dispatchEvent(new CustomEvent('ai-berubah'));
 }
 
 // Urutan belajar yang disarankan (EL04, DS02). Dipakai tombol "Mulai Belajar".

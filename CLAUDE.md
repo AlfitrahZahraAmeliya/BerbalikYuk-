@@ -225,12 +225,15 @@ Contoh isian (Sulit):
 - `manifest.webmanifest`: `name: "BerbalikYuk!"`, `short_name: "BerbalikYuk"`, `start_url: "/"`, `scope: "/"`, `display: "standalone"`, `theme_color: "#2F6FDE"`, `background_color: "#EEF4FF"`, ikon 192, 512, dan 512 `maskable`.
 - `index.html` memuat `<link rel="manifest">`, `<meta name="theme-color">`, `<link rel="apple-touch-icon">`, dan `<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">`.
 - `sw.js` **disajikan dari root** (`/sw.js`) oleh `routes_halaman.py` agar scope-nya mencakup seluruh aplikasi.
-- Strategi cache:
-  - *Precache* saat `install`: shell (`/`, CSS, JS, ikon, `static/data/*.json`, ilustrasi).
-  - Aset statis: *cache-first*.
+- Strategi cache (v5, memperbaiki pengguna lama yang tertahan di versi lama):
+  - *Precache* saat `install` dengan `cache: 'reload'` (melewati cache HTTP): shell (`/`, CSS, JS, ikon, `static/data/*.json`, ilustrasi).
+  - Halaman & aset aplikasi: **network-first** (batas tunggu 4 detik), cache hanya cadangan offline. **Jangan kembali ke cache-first** untuk file aplikasi.
+  - Font Google: cache-first.
   - `/api/*`: **network-only, tidak pernah di-cache**.
-  - Navigasi saat offline: kembalikan `/` dari cache.
-- **Naikkan `CACHE_VERSION` di `sw.js` setiap rilis.** Saat ada SW baru, tampilkan "Versi baru tersedia — ketuk untuk memuat ulang".
+  - SW baru memanggil `skipWaiting()` saat install (tidak menunggu siswa mengetuk). `pwa.js` memuat ulang halaman saat versi baru aktif **hanya di rute aman** (Beranda/daftar/Progres/Pengaturan); di rute lain menunggu siswa pindah halaman agar isian tidak hilang. Pemasangan pertama tidak memicu muat ulang.
+  - `register('/sw.js', { updateViaCache: 'none' })` dan `reg.update()` setiap aplikasi kembali terlihat.
+- **ETag file statis = hash isi** (`app/statis.py`), bukan `mtime-ukuran` bawaan Werkzeug (di Vercel mtime dibekukan sehingga file berubah dengan ukuran sama dibalas 304 basi). Semua file statis & root harus disajikan lewat `kirim_statis`.
+- **Naikkan `CACHE_VERSION` di `sw.js` setiap rilis** agar cache offline ikut diperbarui.
 - `pwa.js`: simpan event `beforeinstallprompt` untuk tombol *Pasang Aplikasi* (Android). Deteksi iOS (`/iphone|ipad/i`) dan `display-mode: standalone` untuk menampilkan panduan Safari atau status "sudah terpasang".
 - PWA hanya bisa dipasang lewat **HTTPS** (atau `localhost`).
 

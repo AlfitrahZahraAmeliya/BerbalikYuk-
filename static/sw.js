@@ -1,6 +1,10 @@
 // Service worker BerbalikYuk!
-// WAJIB: naikkan CACHE_VERSION setiap kali ada file statis yang berubah (rilis baru).
-const CACHE_VERSION = 'v4';
+// Strategi: file aplikasi diambil dari JARINGAN dulu (selalu versi terbaru saat online),
+// cache hanya cadangan saat offline. Versi baru langsung aktif tanpa menunggu siswa
+// mengetuk apa pun, sehingga pengguna lama tidak tertinggal di versi lama.
+// Tetap naikkan CACHE_VERSION setiap rilis agar cache offline diperbarui.
+const CACHE_VERSION = 'v5';
+const BATAS_TUNGGU_JARINGAN = 4000; // ms; jaringan lambat → pakai cache dulu
 const CACHE_APP = `berbalikyuk-app-${CACHE_VERSION}`;
 const CACHE_FONT = 'berbalikyuk-font';
 
@@ -41,7 +45,13 @@ const ASET = [
 ];
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(CACHE_APP).then((cache) => cache.addAll(ASET)));
+  event.waitUntil((async () => {
+    const cache = await caches.open(CACHE_APP);
+    // cache: 'reload' → ambil langsung dari server, bukan dari cache HTTP browser yang bisa basi.
+    await cache.addAll(ASET.map((url) => new Request(url, { cache: 'reload' })));
+    // Aktif segera: jangan menunggu siswa mengetuk "Versi baru tersedia".
+    await self.skipWaiting();
+  })());
 });
 
 self.addEventListener('activate', (event) => {
@@ -63,7 +73,7 @@ self.addEventListener('fetch', (event) => {
   if (request.method !== 'GET') return;
   const url = new URL(request.url);
 
-  // Font Google: simpan setelah pertama kali dimuat.
+  // Font Google: jarang berubah, simpan setelah pertama kali dimuat.
   if (url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com') {
     event.respondWith(cacheDulu(request, CACHE_FONT));
     return;
@@ -73,14 +83,29 @@ self.addEventListener('fetch', (event) => {
   // Data siswa & penilaian: SELALU dari server, tidak pernah di-cache.
   if (url.pathname.startsWith('/api/')) return;
 
-  // Halaman: coba jaringan dulu agar selalu terbaru; jika offline pakai salinan.
-  if (request.mode === 'navigate') {
-    event.respondWith(fetch(request).catch(() => caches.match('/')));
-    return;
-  }
-
-  event.respondWith(cacheDulu(request, CACHE_APP));
+  // Halaman & file aplikasi: jaringan dulu, cache sebagai cadangan offline.
+  const cadanganNavigasi = request.mode === 'navigate' ? '/' : null;
+  event.respondWith(jaringanDulu(request, cadanganNavigasi));
 });
+
+async function jaringanDulu(request, cadangan) {
+  const cache = await caches.open(CACHE_APP);
+  const dariJaringan = fetch(request).then((respons) => {
+    if (respons.ok && respons.type === 'basic') cache.put(request, respons.clone());
+    return respons;
+  });
+  dariJaringan.catch(() => {}); // cegah "unhandled rejection" bila cache yang dipakai
+  try {
+    return await Promise.race([
+      dariJaringan,
+      new Promise((_, gagal) => setTimeout(() => gagal(new Error('lambat')), BATAS_TUNGGU_JARINGAN)),
+    ]);
+  } catch {
+    const tersimpan = (await cache.match(request)) || (cadangan && (await cache.match(cadangan)));
+    if (tersimpan) return tersimpan;
+    return dariJaringan; // tidak ada salinan: tunggu jaringan apa adanya
+  }
+}
 
 async function cacheDulu(request, namaCache) {
   const tersimpan = await caches.match(request);

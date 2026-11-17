@@ -1,6 +1,6 @@
 // F2 — Beranda: tombol Mulai Belajar, 4 menu utama, banner pasang aplikasi.
 import { bisaPasangOtomatis, diIOS, sudahTerpasang } from '../pwa.js';
-import { langkahBerikutnya, muatProgres, persenSelesai, state } from '../state.js';
+import { langkahBerikutnya, muatProgres, muatStatusAI, persenSelesai, state } from '../state.js';
 import { h, bacaLokal, simpanLokal } from '../util.js';
 import { svgIkon } from '../ikon.js';
 import { progressBar } from '../komponen/umum.js';
@@ -64,6 +64,11 @@ export function render(wadah) {
     );
   }
 
+  // Kartu Kak Balik untuk SEMUA siswa (tidak bergantung progres). Digambar ulang
+  // ketika status AI berubah, misalnya baru selesai dimuat atau koneksi kembali.
+  const slotKakBalik = h('div');
+  const gambarKartu = () => slotKakBalik.replaceChildren(kartuKakBalik() || '');
+
   const slotBanner = h('div');
   const pasangBanner = () => slotBanner.replaceChildren(bannerPasang() || '');
 
@@ -81,14 +86,20 @@ export function render(wadah) {
     h('nav', { class: 'menu-grid', 'aria-label': 'Menu belajar' },
       MENU.map((m) => h('a', { class: 'menu-item', href: m.rute, html: `${svgIkon(m.ikon)}<span>${m.judul}</span>` })),
     ),
-    kartuKakBalik(),
+    slotKakBalik,
     slotBanner,
   ));
 
   gambarProgres();
   pasangBanner();
+  gambarKartu();
   window.addEventListener('pwa-berubah', pasangBanner);
+  window.addEventListener('ai-berubah', gambarKartu);
+  if (!state.ai.dimuat) muatStatusAI();
   muatProgres().then(gambarProgres).catch(() => { /* offline: pakai progres tersimpan */ });
 
-  return () => window.removeEventListener('pwa-berubah', pasangBanner);
+  return () => {
+    window.removeEventListener('pwa-berubah', pasangBanner);
+    window.removeEventListener('ai-berubah', gambarKartu);
+  };
 }

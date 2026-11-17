@@ -108,6 +108,7 @@ function buatDom() {
   kb.el = { fab, lembar, isi, keterangan, tombolSebelumnya, daftarPesan, deretCepat, input, tombolKirim };
 
   window.addEventListener('online', perbaruiTampilan);
+  window.addEventListener('ai-berubah', perbaruiTampilan);
   window.addEventListener('offline', () => { kakBalik.tutup(); perbaruiTampilan(); });
 }
 

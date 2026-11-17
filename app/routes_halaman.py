@@ -1,11 +1,13 @@
 """Menyajikan halaman SPA serta file PWA dari root agar scope service worker = '/'."""
-from flask import Blueprint, current_app, send_from_directory
+from flask import Blueprint, current_app
+
+from .statis import kirim_statis
 
 bp = Blueprint("halaman", __name__)
 
 
 def _kirim(nama, mimetype=None):
-    respons = send_from_directory(current_app.static_folder, nama, mimetype=mimetype, max_age=0)
+    respons = kirim_statis(current_app.static_folder, nama, mimetype=mimetype, max_age=0)
     respons.headers["Cache-Control"] = "no-cache"
     return respons
 
@@ -27,4 +29,4 @@ def manifest():
 
 @bp.get("/favicon.ico")
 def favicon():
-    return send_from_directory(current_app.static_folder, "icons/icon-192.png", mimetype="image/png")
+    return kirim_statis(current_app.static_folder, "icons/icon-192.png", mimetype="image/png")

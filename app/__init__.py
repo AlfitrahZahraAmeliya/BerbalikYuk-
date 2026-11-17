@@ -5,6 +5,15 @@ from flask import Flask, jsonify, request
 
 from .config import DI_VERCEL, Config
 from .db import buat_repo
+from .statis import kirim_statis
+
+
+class FlaskBerbalik(Flask):
+    """Flask dengan ETag file statis berbasis isi (lihat app/statis.py)."""
+
+    def send_static_file(self, filename):
+        return kirim_statis(self.static_folder, filename, max_age=self.get_send_file_max_age(filename))
+
 
 CSP = (
     "default-src 'self'; "
@@ -20,7 +29,7 @@ CSP = (
 
 
 def create_app(test_config=None):
-    app = Flask(__name__, static_folder="../static", static_url_path="/static")
+    app = FlaskBerbalik(__name__, static_folder="../static", static_url_path="/static")
     app.config.from_object(Config)
     if test_config:
         app.config.update(test_config)

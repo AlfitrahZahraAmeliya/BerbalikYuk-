@@ -43,33 +43,47 @@ export async function pasang() {
   return outcome === 'accepted';
 }
 
+// Halaman tanpa isian/jawaban yang sedang dikerjakan: aman dimuat ulang kapan saja.
+const RUTE_AMAN = ['', '#/', '#/beranda', '#/progres', '#/pengaturan', '#/tentang', '#/pasang',
+  '#/materi', '#/contoh', '#/latihan'];
+
+function halamanAman() {
+  return RUTE_AMAN.includes(window.location.hash);
+}
+
 export function daftarkanServiceWorker() {
   if (!('serviceWorker' in navigator)) return;
+  // Ada pengendali saat halaman dibuka → perubahan pengendali berarti PEMBARUAN versi.
+  // Tidak ada → itu pemasangan pertama (clients.claim); jangan memuat ulang.
+  const pembaruan = Boolean(navigator.serviceWorker.controller);
+  let sudahMuatUlang = false;
+  const muatUlang = () => {
+    if (sudahMuatUlang) return;
+    sudahMuatUlang = true;
+    window.location.reload();
+  };
+
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!pembaruan) return;
+    // Versi baru sudah aktif. Muat ulang saat aman agar isian/jawaban siswa tidak hilang:
+    // langsung di halaman tanpa isian, atau saat siswa pindah halaman berikutnya.
+    if (halamanAman()) {
+      muatUlang();
+    } else {
+      toast('Versi baru siap — dipakai saat kamu pindah halaman (atau ketuk di sini).', muatUlang);
+      window.addEventListener('hashchange', muatUlang, { once: true });
+    }
+  });
+
   window.addEventListener('load', async () => {
     try {
-      const reg = await navigator.serviceWorker.register('/sw.js');
-      // Muat ulang HANYA jika siswa mengetuk "Versi baru tersedia". Saat pertama kali dibuka,
-      // clients.claim() juga memicu controllerchange; jangan memuat ulang (isian bisa hilang).
-      let mintaMuatUlang = false;
-      const tawarkanPembaruan = (sw) => {
-        toast('Versi baru tersedia — ketuk untuk memuat ulang.', () => {
-          mintaMuatUlang = true;
-          sw.postMessage('SKIP_WAITING');
-        });
-      };
-      if (reg.waiting && navigator.serviceWorker.controller) tawarkanPembaruan(reg.waiting);
-      reg.addEventListener('updatefound', () => {
-        const baru = reg.installing;
-        baru?.addEventListener('statechange', () => {
-          if (baru.state === 'installed' && navigator.serviceWorker.controller) tawarkanPembaruan(baru);
-        });
+      const reg = await navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' });
+      // PWA yang lama di latar belakang: cek pembaruan setiap kali dibuka kembali.
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') reg.update().catch(() => {});
       });
-      let sudahMuatUlang = false;
-      navigator.serviceWorker.addEventListener('controllerchange', () => {
-        if (!mintaMuatUlang || sudahMuatUlang) return;
-        sudahMuatUlang = true;
-        window.location.reload();
-      });
+      // Service worker versi lama (sebelum v5) mungkin masih menunggu: aktifkan sekarang.
+      if (reg.waiting && navigator.serviceWorker.controller) reg.waiting.postMessage('SKIP_WAITING');
     } catch (galat) {
       console.warn('Service worker gagal didaftarkan:', galat);
     }
