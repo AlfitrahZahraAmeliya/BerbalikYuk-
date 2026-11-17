@@ -5,6 +5,7 @@ import { mulaiRouter } from './router.js';
 import { muatStatusAI, setSiswa, state } from './state.js';
 import { h, toast } from './util.js';
 import { svgIkon } from './ikon.js';
+import { kakBalik } from './komponen/pembimbing.js';
 
 import * as masuk from './halaman/masuk.js';
 import * as beranda from './halaman/beranda.js';
@@ -49,7 +50,8 @@ const RUTE = [
   { pola: '/materi/:id?/:layar?', halaman: materi.render },
   { pola: '/contoh/:n?', halaman: contoh.render },
   { pola: '/latihan/:tingkat?', halaman: latihan.render },
-  { pola: '/kuis', halaman: kuis.render },
+  // Kuis = penilaian: Kak Balik dilarang (tanpa tombol, jendela, maupun akses AI).
+  { pola: '/kuis', halaman: kuis.render, aiTerlarang: true },
   { pola: '/progres', halaman: progres.render, nav: 'progres' },
   { pola: '/pengaturan', halaman: pengaturan.render, nav: 'pengaturan' },
   { pola: '/tentang', halaman: pengaturan.renderTentang, nav: 'pengaturan' },
@@ -88,11 +90,19 @@ async function mulai() {
 
   if (!state.offline) kirimAntrean().catch(() => {});
   if (state.siswa && !state.offline) await muatStatusAI();
+  kakBalik.pasang();
 
   mulaiRouter(RUTE, {
     wadah,
     sudahLogin: () => Boolean(state.siswa),
-    sebelumRender: (rute) => gambarNav(rute.nav),
+    sebelumRender: (rute) => {
+      gambarNav(rute.nav);
+      // Whitelist: Kak Balik disembunyikan di setiap halaman, kecuali halaman itu sendiri
+      // memanggil kakBalik.atur(...). Rute aiTerlarang (Kuis) mengabaikan panggilan itu.
+      kakBalik.reset();
+      kakBalik.larang(Boolean(rute.aiTerlarang));
+      kakBalik.atur(null);
+    },
   });
   window.addEventListener('hashchange', () => setTimeout(tampilkanOffline, 0));
   setTimeout(tampilkanOffline, 0);

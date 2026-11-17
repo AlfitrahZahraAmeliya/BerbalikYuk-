@@ -1,6 +1,6 @@
 // Service worker BerbalikYuk!
 // WAJIB: naikkan CACHE_VERSION setiap kali ada file statis yang berubah (rilis baru).
-const CACHE_VERSION = 'v2';
+const CACHE_VERSION = 'v4';
 const CACHE_APP = `berbalikyuk-app-${CACHE_VERSION}`;
 const CACHE_FONT = 'berbalikyuk-font';
 

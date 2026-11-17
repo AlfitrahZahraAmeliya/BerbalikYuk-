@@ -91,7 +91,7 @@ Butuh **Python 3.11+**. Akun **Supabase** (gratis) baru diperlukan untuk deploy.
 2. Tempel ke file `.env` (jangan dibagikan atau di-commit):
    ```
    GEMINI_API_KEY=...kunci Anda...
-   GEMINI_MODEL=gemini-2.5-flash
+   GEMINI_MODEL=gemini-3.1-flash-lite
    ```
 3. Jika database Supabase sudah berjalan sebelumnya, jalankan **sekali** isi `supabase/migrasi_001_bimbingan_ai.sql` di SQL Editor Supabase.
 4. Jalankan ulang server. Jika `GEMINI_API_KEY` kosong, aplikasi tetap berjalan dengan petunjuk statis.

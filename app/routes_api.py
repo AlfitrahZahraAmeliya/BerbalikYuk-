@@ -247,8 +247,11 @@ def tanya_pembimbing():
 
     keadaan = data.get("keadaan") if isinstance(data.get("keadaan"), dict) else {}
     riwayat = pembimbing.bersihkan_riwayat(data.get("riwayat"))
-    jumlah_tanya = sum(1 for g in riwayat if g["peran"] == "siswa")
-    cadangan = pembimbing.petunjuk_cadangan(sumber, sumber_data, keadaan, jumlah_tanya)
+    # Kenali kebutuhan siswa (konsep / macet / minta jawaban / minta dicek) dan tingkat bantuan ZPD.
+    jenis = pembimbing.klasifikasi_pertanyaan(pesan)
+    tingkat = pembimbing.tingkat_bantuan(riwayat, keadaan, jenis)
+    cadangan = pembimbing.petunjuk_cadangan(
+        sumber, sumber_data, keadaan, tingkat - 1, pesan=pesan, riwayat=riwayat, jenis=jenis)
 
     sistem = pembimbing.prompt_sistem(nama)
     if mode == "refleksi":
@@ -256,28 +259,51 @@ def tanya_pembimbing():
         terlarang = []  # jawaban sudah diperoleh siswa sendiri
     else:
         terlarang = pembimbing.angka_terlarang(sumber, sumber_data, keadaan)
-    sistem += pembimbing.bangun_konteks(sumber, sumber_data, keadaan, fase)
+    sistem += pembimbing.bangun_konteks(sumber, sumber_data, keadaan, fase, jenis, tingkat, riwayat, mode)
 
-    pakai_cadangan = False
+    pakai_cadangan, tersaring = False, False
+    hasil = {"balasan": cadangan, "giliran_siswa": "", "tahap": None, "penilaian_respons": None, "representasi": None}
     try:
-        mentah = pembimbing.minta_gemini(config, sistem, riwayat, pesan)
-        balasan, tersaring = pembimbing.saring_balasan(mentah, terlarang, cadangan)
+        hasil = pembimbing.urai_balasan(pembimbing.minta_gemini(config, sistem, riwayat, pesan))
+        # Cegah balasan berulang: minta sekali lagi dengan bantuan tingkat berikutnya & pendekatan lain.
+        sebelumnya = pembimbing._balasan_terakhir(riwayat)
+        if pembimbing.mirip(pembimbing.teks_lengkap(hasil["balasan"], hasil["giliran_siswa"]), sebelumnya) \
+                or pembimbing.mirip(hasil["balasan"], sebelumnya.partition("\nGiliranmu: ")[0]):
+            tingkat_baru = min(tingkat + 1, 4)
+            catatan = (f"\nPERINGATAN: balasanmu tadi sama dengan sebelumnya. Beri bantuan BARU yang lebih konkret "
+                       f"dengan representasi lain (tingkat {pembimbing.NAMA_TINGKAT[tingkat_baru]}).")
+            hasil = pembimbing.urai_balasan(pembimbing.minta_gemini(config, sistem + catatan, riwayat, pesan))
+        # Penyaring jawaban berlaku untuk balasan DAN tugas siswa.
+        gabungan = pembimbing.teks_lengkap(hasil["balasan"], hasil["giliran_siswa"])
+        _, tersaring = pembimbing.saring_balasan(gabungan, terlarang, cadangan)
+        if tersaring:
+            hasil = {"balasan": cadangan, "giliran_siswa": "", "tahap": None,
+                     "penilaian_respons": None, "representasi": None}
+        else:
+            hasil["balasan"] = pembimbing.rapikan_balasan(hasil["balasan"])
     except pembimbing.GalatPembimbing as masalah:
         current_app.logger.warning("Pembimbing AI memakai cadangan: %s", masalah)
-        balasan, tersaring, pakai_cadangan = cadangan, False, True
+        pakai_cadangan = True
 
     repo.simpan_bimbingan({
         "siswa_id": siswa_id,
         "sumber": sumber,
         "ref_id": ref,
-        "fase": fase,
+        "fase": fase or hasil["tahap"],
         "mode": mode,
         "pesan_siswa": pesan,
-        "balasan": balasan,
+        "balasan": pembimbing.teks_lengkap(hasil["balasan"], hasil["giliran_siswa"]),
         "tersaring": tersaring,
         "cadangan": pakai_cadangan,
     })
-    return jsonify({"balasan": balasan, "tersaring": tersaring, "cadangan": pakai_cadangan, "nama": nama})
+    return jsonify({
+        "balasan": hasil["balasan"],
+        "giliran_siswa": hasil["giliran_siswa"],
+        # Metadata mediasi dikirim balik oleh klien di riwayat (tahap, penilaian, representasi).
+        "meta": {"tahap": hasil["tahap"], "penilaian": hasil["penilaian_respons"],
+                 "representasi": hasil["representasi"]},
+        "tersaring": tersaring, "cadangan": pakai_cadangan, "nama": nama,
+    })
 
 
 # ---------- Galat ----------

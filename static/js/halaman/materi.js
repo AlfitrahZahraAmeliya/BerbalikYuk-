@@ -5,7 +5,7 @@ import { svgIkon } from '../ikon.js';
 import { kepala, panelHint, panelUmpanBalik, pesanGalat, progressBar, tombolLanjut } from '../komponen/umum.js';
 import { tabelRumus } from '../komponen/tabel-rumus.js';
 import { simulasi } from '../komponen/simulasi.js';
-import { panelPembimbing } from '../komponen/pembimbing.js';
+import { kakBalik, namaPembimbing, aiTersedia } from '../komponen/pembimbing.js';
 
 // Layar yang berfungsi sebagai tes formatif tidak diberi pembimbing AI.
 const TANPA_AI = ['prasyarat', 'kuis-jenis'];
@@ -27,6 +27,7 @@ const kapital = (t) => t.charAt(0).toUpperCase() + t.slice(1);
 // ---------- Daftar Materi ----------
 
 function renderDaftar(wadah, materi) {
+  kakBalik.atur({ sumber: 'umum', ref: 'materi' });
   const disarankan = langkahBerikutnya().id;
   wadah.append(h('div', { class: 'tumpuk-lebar' },
     kepala({ judul: 'Materi', kembali: '#/beranda' }),
@@ -346,6 +347,10 @@ function layarTransendensi(l, siap) {
     h('div', { class: 'kartu-judul' }, h('h1', {}, l.judul || 'Hubungkan dengan duniamu')),
     h('div', { class: 'tumpuk', html: l.isi }),
     l.pertanyaan ? h('p', { class: 'kotak-kesimpulan' }, h('span', {}, l.pertanyaan)) : null,
+    aiTersedia() ? h('button', {
+      class: 'tombol tombol-garis tombol-penuh', type: 'button',
+      onclick: () => kakBalik.buka(),
+    }, `Diskusikan dengan ${namaPembimbing()}`) : null,
   );
 }
 
@@ -366,6 +371,7 @@ const PERENDER = {
 // ---------- Halaman satu materi ----------
 
 function renderSelesai(wadah, id, m) {
+  kakBalik.atur({ sumber: 'umum', ref: 'materi' });
   const indeks = ID_MATERI.indexOf(id);
   const berikut = ID_MATERI[indeks + 1];
   wadah.append(h('div', { class: 'tumpuk-lebar tengah' },
@@ -410,8 +416,8 @@ export async function render(wadah, params) {
   const layar = PERENDER[m.layar[idx].tipe](m.layar[idx], siap);
 
   const tipe = m.layar[idx].tipe;
-  const panel = TANPA_AI.includes(tipe) ? null : panelPembimbing({ sumber: 'materi', ref: `${id}:${idx}` });
-  if (panel && tipe === 'transendensi') panel.buka();
+  // Tombol melayang Kak Balik untuk layar ini (bukan di layar tes formatif).
+  if (!TANPA_AI.includes(tipe)) kakBalik.atur({ sumber: 'materi', ref: `${id}:${idx}` });
 
   // Materi yang pernah selesai boleh dilewati tanpa menjawab ulang.
   if (sudahSelesai(idModul(id))) siap();
@@ -425,6 +431,5 @@ export async function render(wadah, params) {
       idx > 0 ? h('a', { class: 'tombol tombol-garis', href: `#/materi/${id}/${idx - 1}` }, '← Kembali') : null,
       lanjut,
     ),
-    panel ? panel.el : null,
   ));
 }

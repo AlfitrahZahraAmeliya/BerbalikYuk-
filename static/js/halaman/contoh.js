@@ -3,7 +3,7 @@ import { catatProgres, sudahSelesai } from '../state.js';
 import { bacaAngka, h, samaAngka } from '../util.js';
 import { svgIkon } from '../ikon.js';
 import { chipFase, kepala, panelHint, panelUmpanBalik, pesanGalat, tombolLanjut } from '../komponen/umum.js';
-import { panelPembimbing } from '../komponen/pembimbing.js';
+import { kakBalik } from '../komponen/pembimbing.js';
 
 // Fase RMT tiap langkah: 1–2 Input, 3–5 Elaborasi, 6 Output.
 const FASE_LANGKAH = ['input', 'input', 'elaborasi', 'elaborasi', 'elaborasi', 'output'];
@@ -19,6 +19,7 @@ async function muatContoh() {
 }
 
 function renderDaftar(wadah, daftar) {
+  kakBalik.atur({ sumber: 'umum', ref: 'contoh' });
   wadah.append(h('div', { class: 'tumpuk-lebar' },
     kepala({ judul: 'Contoh Soal', kembali: '#/beranda' }),
     h('p', { class: 'teks-lemah' }, 'Pelajari contoh langkah demi langkah. Ketuk Lanjut jika sudah paham.'),
@@ -129,7 +130,7 @@ function renderContoh(wadah, daftar, n) {
     if (terbuka > 1) langkahEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
-  const panel = panelPembimbing({
+  kakBalik.atur({
     sumber: 'contoh', ref: n,
     ambilFase: () => FASE_LANGKAH[Math.max(terbuka - 1, 0)],
     ambilKeadaan: () => ({ langkah_terbuka: terbuka }),
@@ -141,7 +142,6 @@ function renderContoh(wadah, daftar, n) {
     h('span', { class: 'label-chip muda' }, 'Pembahasan:'),
     daftarLangkah,
     aksi,
-    panel ? panel.el : null,
   ));
   bukaLangkah();
 }

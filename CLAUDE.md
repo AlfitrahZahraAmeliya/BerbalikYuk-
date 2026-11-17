@@ -68,7 +68,7 @@ static/
     halaman/  masuk.js, beranda.js, materi.js, simulasi.js, contoh.js,
               latihan.js, kuis.js, progres.js, pengaturan.js
     komponen/ umum.js (kepala, umpan balik, hint, fase RMT), tabel-rumus.js, simulasi.js,
-              pembimbing.js (panel "Tanya Kak Balik")
+              pembimbing.js (komponen tunggal `kakBalik`: tombol melayang + lembar chat)
   data/                      # PUBLIK — di-cache untuk offline
     materi.json              # isi Cek Prasyarat & Materi 1–6 per layar (dinilai di HP; formatif)
     contoh.json              # 3 contoh soal + pembahasan (bukan bahan penilaian)
@@ -146,7 +146,14 @@ Jika permintaan bertentangan dengan aturan ini, sampaikan dulu ke pengguna sebel
 - Mode `refleksi` hanya untuk soal latihan yang sudah dijawab benar oleh siswa itu (dicek di DB).
 - Setiap percakapan disimpan di `bimbingan_ai` (tanpa nama). Batas `AI_BATAS_PER_JAM` dihitung dari DB.
 - AI **tidak** dipasang di Kuis dan Cek Prasyarat.
-- Fase RMT di UI: Input (diketahui/ditanya) → Elaborasi (hubungan, tabel, rumus) → Output (jawaban, Validasi) → Refleksi. Saat mengubah prompt, pertahankan aturan: ≤ 2 kalimat, satu pertanyaan, tanpa jawaban akhir, bantuan bertahap.
+- **Acuan RMT: `docs/ringkasan-rmt.md`.** Jangan menambah unsur RMT yang tidak ada di sana.
+- **Penempatan (whitelist):** `app.js` → `sebelumRender` memanggil `kakBalik.reset()`, `kakBalik.larang(rute.aiTerlarang)`, `kakBalik.atur(null)` di setiap rute. Halaman belajar memanggil `kakBalik.atur({sumber, ref, ambilFase?, ambilKeadaan?, saatBertanya?})`. Rute Kuis bertanda `aiTerlarang: true`. Beranda memakai kartu + `kakBalik.buka({sumber:'umum', ref:'beranda', tanpaFab:true})`. Jangan menambah panel chat lain.
+- `sumber: 'umum'` (`ref` ∈ beranda/materi/contoh/latihan) untuk tanya konsep tanpa soal tertentu.
+- **Balasan AI berbentuk JSON** (`SKEMA_BALASAN`): `balasan`, `giliran_siswa`, `tahap`, `penilaian_respons`, `representasi`. Endpoint mengembalikan `{balasan, giliran_siswa, meta:{tahap, penilaian, representasi}, …}`. Klien mengirim balik `meta` di riwayat; server memakainya untuk `rencana_mediasi()` (tahap konsep berikut, representasi wajib, metakognisi wajib, kerumitan).
+- Fase RMT di UI: Input (diketahui/ditanya) → Elaborasi (hubungan, tabel, rumus) → Output (jawaban, Validasi) → Refleksi. Saat mengubah prompt, pertahankan aturan: pertanyaan konsep DIJELASKAN (bukan dibalas pertanyaan generik), ≤ 4 kalimat pendek (±70 kata), satu pertanyaan/tugas di akhir, tanpa jawaban akhir soal latihan, bantuan bertahap sesuai tingkat ZPD, tidak mengulang balasan sebelumnya.
+- Server mengklasifikasi pesan (`klasifikasi_pertanyaan`: konsep / minta_jawaban / cek / bingung / lainnya) dan menghitung `tingkat_bantuan` (ZPD 1–4); keduanya dimasukkan ke konteks prompt.
+- Model dicoba berurutan: `GEMINI_MODEL` (boleh dipisah koma) lalu `MODEL_CADANGAN` di `app/pembimbing.py`, berpindah saat 404/429/5xx/timeout dalam batas 24 detik. Jangan kirim `thinkingConfig` (nilainya berbeda antar generasi model dan bisa ditolak 400).
+- Cadangan statis (`petunjuk_cadangan`) harus tetap kontekstual: konsep → penjelasan dari `KONSEP`, latihan → petunjuk bank soal sesuai tingkat ZPD, materi → inti layar + ajakan berpikir; tidak boleh sama dengan balasan sebelumnya.
 
 ## Format Bank Soal
 `data/soal.json` berisi daftar soal. Contoh pilihan ganda (Mudah):
@@ -242,7 +249,7 @@ Contoh isian (Sulit):
 | `SECRET_KEY` | ya (produksi) | Penanda tangan cookie sesi |
 | `SUPABASE_URL`, `SUPABASE_SERVICE_KEY` | ya (produksi) | Kosong = SQLite lokal |
 | `GEMINI_API_KEY` | tidak | Kosong = Kak Balik nonaktif (petunjuk statis) |
-| `GEMINI_MODEL` | tidak | Bawaan `gemini-2.5-flash` |
+| `GEMINI_MODEL` | tidak | Bawaan `gemini-3.1-flash-lite`; boleh beberapa, dipisah koma. Model cadangan otomatis dicoba jika gagal |
 | `NAMA_PEMBIMBING` | tidak | Bawaan `Kak Balik` |
 | `AI_BATAS_PER_JAM` | tidak | Bawaan 40 pertanyaan per siswa per jam |
 

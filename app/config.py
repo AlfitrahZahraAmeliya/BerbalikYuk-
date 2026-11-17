@@ -30,7 +30,8 @@ class Config:
     NAMA_PEMBIMBING = os.environ.get("NAMA_PEMBIMBING", "Kak Balik")
     # Kunci HANYA dari variabel lingkungan. Jangan pernah ditulis di kode.
     GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "").strip()
-    GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash").strip()
+    # Boleh lebih dari satu, dipisah koma. Model cadangan otomatis: lihat app/pembimbing.py.
+    GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-3.1-flash-lite").strip()
     GEMINI_URL_DASAR = os.environ.get(
         "GEMINI_URL_DASAR", "https://generativelanguage.googleapis.com/v1beta"
     ).rstrip("/")

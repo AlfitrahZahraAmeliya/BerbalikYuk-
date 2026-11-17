@@ -94,7 +94,8 @@ def test_cadangan_saat_gemini_gagal(ai, monkeypatch):
     riwayat = [{"peran": "siswa", "teks": "halo"}, {"peran": "pembimbing", "teks": "hai"}]
     data = tanya(ai["klien"], riwayat=riwayat).get_json()
     assert data["cadangan"] is True
-    assert data["balasan"] == bank_soal.cari_latihan("L1-01")["hint"][1]  # naik sesuai jumlah tanya
+    # tingkat bantuan: 1 + 1 (sudah bertanya sekali) + 1 ("bingung") = 3 → petunjuk ke-3
+    assert data["balasan"] == bank_soal.cari_latihan("L1-01")["hint"][2]
 
 
 def test_riwayat_dibersihkan(ai):

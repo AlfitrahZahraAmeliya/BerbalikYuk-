@@ -191,5 +191,37 @@ Rujukan: Kinard & Kozulin, *Rigorous Mathematical Thinking: Conceptual Formation
 | Beban | Strategi Kak Balik |
 |---|---|
 | **Intrinsik** | Satu langkah kecil per balasan, fokus pada fase yang sedang dikerjakan |
-| **Ekstrinsik** | Maks. 2 kalimat (±40 kata), tombol pertanyaan cepat agar tidak perlu mengetik, panel di layar yang sama, hanya 2 giliran terakhir terlihat |
+| **Ekstrinsik** | Maks. 4 kalimat pendek (±70 kata), satu ide per balasan, tanpa markdown, tombol pertanyaan cepat agar tidak perlu mengetik, panel di layar yang sama, hanya 2 giliran terakhir terlihat |
 | **Germane** | Pertanyaan pemantik "mengapa", validasi, refleksi, dan transendensi |
+
+### 9.3 Cara Kak Balik memilih jenis bantuan (v1.3)
+
+| Kebutuhan siswa (dikenali server + AI) | Respons Kak Balik |
+|---|---|
+| Pertanyaan **konsep** ("apa itu…", "kenapa…", "bedanya…") | **Menjelaskan**: arti → makna/alasan → contoh sehari-hari dengan representasi singkat → satu pertanyaan cek pemahaman |
+| **Macet** saat mengerjakan soal | Bimbingan sesuai **tingkat ZPD** 1–4: orientasi → strategi → langkah terpandu → contoh mirip dengan angka lain |
+| **Meminta jawaban** | Menolak singkat, lalu langsung memberi bantuan konkret sesuai tingkat ZPD |
+| **Meminta dicek** | Menyebut yang sudah tepat dan satu bagian yang perlu diperbaiki beserta alasannya (metakognisi) |
+| **Menjawab pertanyaan Kak Balik** | Menanggapi secara spesifik lalu membawa ke langkah berikutnya |
+
+Tingkat ZPD naik setiap kali siswa bertanya lagi, salah ≥ 2 kali, atau menyatakan bingung. Balasan yang (hampir) sama dengan balasan sebelumnya diminta ulang dengan tingkat bantuan berikutnya.
+
+### 9.4 Evaluasi penerapan RMT & Cognitive Load (v1.4)
+
+Acuan: [docs/ringkasan-rmt.md](docs/ringkasan-rmt.md).
+
+| Komponen | Sebelum (v1.3) | Sekarang (v1.4) |
+|---|---|---|
+| Fungsi kognitif Input–Elaborasi–Output | Label fase di UI; prompt umum | AI melaporkan `tahap` tiap balasan; prompt merinci fungsi kognitif tiap fase (akurasi data & satuan, sebab-akibat & perencanaan, jawaban tepat tanpa coba-coba + validasi) |
+| ZPD / bantuan bertahap | Tingkat 1–4 dari jumlah tanya | Tingkat juga naik bila respons siswa **dinilai keliru**; kerumitan angka diatur sesuai tingkat |
+| Pembentukan konsep | Definisi + contoh langsung | **Amati → bandingkan → temukan pola → simpulkan (oleh siswa) → resmikan istilah & makna → terapkan**; 2× kesulitan berturut → penjelasan lengkap lalu siswa menyatakan ulang |
+| MLE Intensionalitas & Resiprositas | Lemah | Tujuan mikro saat tahap berganti; setiap balasan menilai respons siswa sebelumnya (`penilaian_respons`) dan memberi **satu tugas** (`giliran_siswa`) |
+| MLE Makna & Transendensi | Layar Materi + refleksi | Diresmikan di tahap *simpulkan* (makna) dan *terapkan* (transendensi) di dalam percakapan |
+| Metakognisi | Mode refleksi & Validasi | **Wajib** setelah jawaban tepat, pada tahap simpulkan/output/validasi, dan tiap 3 giliran |
+| Ganti representasi saat bingung | Belum ada | Server mewajibkan representasi **lebih konkret yang belum dipakai** (cerita konkret ← gambar kata ← tabel ← pola hasil kali ← rumus) |
+| Beban intrinsik | Satu ide per balasan | + angka kecil & sedikit unsur di awal, naik bertahap |
+| Beban ekstrinsik | Balasan ringkas | + tugas dipisah dan ditonjolkan ("Giliranmu"), lembar chat 60% agar soal tetap terlihat |
+| Beban germane | Pertanyaan "mengapa" | + aktivitas memprediksi, membandingkan, menemukan pola, menjelaskan ulang |
+| Siswa aktif | Pertanyaan terselip di teks | Setiap balasan diakhiri satu "Giliranmu" yang harus dijawab siswa |
+
+**Yang masih terbatas:** penilaian respons dilakukan oleh AI (bisa keliru menilai); tahap & representasi bergantung pada metadata yang dikembalikan model; belum ada asesmen dinamis format *sandwich* (pra-tes/pasca-tes) karena diputuskan tidak menambah Tes Awal.

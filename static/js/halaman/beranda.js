@@ -4,6 +4,24 @@ import { langkahBerikutnya, muatProgres, persenSelesai, state } from '../state.j
 import { h, bacaLokal, simpanLokal } from '../util.js';
 import { svgIkon } from '../ikon.js';
 import { progressBar } from '../komponen/umum.js';
+import { aiTersedia, kakBalik, namaPembimbing } from '../komponen/pembimbing.js';
+
+/** Kartu pengenalan Kak Balik: menjelaskan fungsinya, tidak membuka chat otomatis. */
+function kartuKakBalik() {
+  if (!aiTersedia()) return null;
+  const nama = namaPembimbing();
+  return h('section', { class: 'kartu-kak-balik', 'aria-label': `Kenalan dengan ${nama}` },
+    h('span', { class: 'nomor', html: svgIkon('pesan') }),
+    h('div', { class: 'tumpuk' },
+      h('strong', {}, `Kenalan dengan ${nama}`),
+      h('p', { class: 'teks-kecil' }, 'Kakak pembimbing yang menemanimu berpikir langkah demi langkah. '
+        + `${nama} tidak memberi jawaban, tapi membantumu menemukannya sendiri.`),
+      h('p', { class: 'teks-kecil teks-lemah' }, 'Ada di Materi, Contoh Soal, dan Latihan. Tidak tersedia saat Kuis.'),
+      h('button', {
+        class: 'tombol tombol-garis', type: 'button',
+        onclick: () => kakBalik.buka({ sumber: 'umum', ref: 'beranda', tanpaFab: true }),
+      }, `Coba tanya ${nama}`)));
+}
 
 const MENU = [
   { judul: 'Materi', ikon: 'buku', rute: '#/materi' },
@@ -63,6 +81,7 @@ export function render(wadah) {
     h('nav', { class: 'menu-grid', 'aria-label': 'Menu belajar' },
       MENU.map((m) => h('a', { class: 'menu-item', href: m.rute, html: `${svgIkon(m.ikon)}<span>${m.judul}</span>` })),
     ),
+    kartuKakBalik(),
     slotBanner,
   ));
 

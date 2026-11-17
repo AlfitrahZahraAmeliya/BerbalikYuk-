@@ -2,11 +2,13 @@
 
 **Nama produk:** *BerbalikYuk!* — Aplikasi Belajar Perbandingan Berbalik Nilai
 **Penyusun:** Alfitrah Zahra Ameliya (NIM 2225250181)
-**Versi dokumen:** 1.2 — 17 November 2026
+**Versi dokumen:** 1.4 — 17 November 2026
 **Status:** Draf, tahap *Design* (ADDIE)
 
 Dokumen terkait: [ANALISIS.md](ANALISIS.md) · [DESAIN.md](DESAIN.md) · [CLAUDE.md](CLAUDE.md) · [README.md](README.md)
 
+> **Perubahan v1.4:** Kak Balik menjadi **satu komponen tombol melayang + lembar chat** dengan penempatan per halaman (lihat "Penempatan Kak Balik"); mediasi RMT mendalam (pembentukan konsep, resiprositas, metakognisi, ganti representasi).
+>
 > **Perubahan v1.2:** model pembelajaran **Rigorous Mathematical Thinking (RMT)**; **Pembimbing AI "Kak Balik"** (Google Gemini) di Latihan, Contoh Soal, dan Materi; tambah F12 dan F13.
 >
 > **Perubahan v1.1:** aplikasi menjadi **PWA** yang bisa dipasang di HP tanpa Play Store/App Store; backend memakai **Python (Flask)**; tampilan mengadaptasi mockup MathStep; rumus utama **a₁ × b₁ = a₂ × b₂**; tambah F10 dan F11.
@@ -88,6 +90,18 @@ Urutan belajar yang disarankan (EL04, DS02): **Materi 1–6 → Contoh Soal → 
 | F12 | **Pembimbing AI "Kak Balik"** | Latihan, Contoh Soal, Materi (tidak di Kuis & Cek Prasyarat) | Panel "Tanya Kak Balik" berbasis Google Gemini lewat server Flask. Membimbing proses berpikir per fase RMT, memberi bantuan bertahap sesuai kesulitan, **tidak memberi jawaban akhir** (aturan prompt + penyaring di server). Tombol pertanyaan cepat per fase. Refleksi setelah jawaban benar. Jika AI nonaktif atau gagal, siswa mendapat petunjuk statis | GL03, GL04, K02, EL04, ANALISIS §9 |
 | F13 | **Fase RMT & MLE** | Latihan, Contoh Soal, Materi | Penanda fase **Input → Elaborasi → Output**; langkah **Validasi** setelah benar; *Tujuan*, *Mengapa penting?*, dan layar *transendensi* di setiap materi; Materi 1 dimulai dari konsep sehari-hari | ANALISIS §9 |
 
+### Penempatan Kak Balik (F12)
+Satu komponen (`kakBalik` di `static/js/komponen/pembimbing.js`). Router menyembunyikannya di setiap halaman; hanya halaman di bawah ini yang menampilkannya.
+
+| Halaman | Akses Kak Balik |
+|---|---|
+| Beranda | **Kartu pengenalan** + tombol "Coba tanya" (tidak membuka chat otomatis, tanpa tombol melayang) |
+| Materi (daftar & setiap layar) | Tombol melayang; **kecuali** layar Cek Prasyarat & kuis jenis (tes formatif). Layar transendensi punya tombol "Diskusikan dengan Kak Balik" |
+| Contoh Soal (daftar & detail) | Tombol melayang |
+| Latihan (daftar & setiap soal) | Tombol melayang (menggantikan tombol Petunjuk saat AI aktif); setelah 2× salah muncul tombol "Tanya Kak Balik"; setelah Validasi muncul "Refleksi bersama Kak Balik" |
+| **Kuis** | **Tidak ada** tombol, jendela, maupun akses AI (rute `aiTerlarang`) |
+| Progres, Pengaturan, Tentang, Pasang, Masuk/Daftar | Tidak ada (bukan halaman belajar) |
+
 ### Aturan buka-kunci latihan
 - **Mudah**: selalu terbuka.
 - **Sedang**: terbuka setelah skor Mudah ≥ 60%.
@@ -139,7 +153,7 @@ Untuk soal **pilihan ganda** (Mudah), setiap opsi salah sudah diberi jenis kesal
 | US9 | melatih soal cerita panjang | Latihan Sulit: jawaban hanya bisa dikirim setelah *Diketahui* dan *Ditanya* ditandai |
 | US10 | melihat hasil kuis | Layar hasil menampilkan skor, skor per TP, dan pembahasan setiap soal |
 | US11 | memasang aplikasi di HP tanpa Play Store | Android: tombol *Pasang Aplikasi* memunculkan dialog instalasi Chrome. iPhone: tampil panduan Safari → Bagikan → *Tambahkan ke Layar Utama*. Setelah dipasang, aplikasi terbuka layar penuh tanpa bilah alamat |
-| US13 | dibimbing berpikir saat macet tanpa diberi jawaban | Panel Kak Balik membalas ≤ 2 kalimat dan diakhiri satu pertanyaan; balasan yang memuat jawaban akhir diganti petunjuk statis (`tersaring`) |
+| US13 | dibimbing berpikir saat macet tanpa diberi jawaban | Pertanyaan konsep dijelaskan dengan contoh sehari-hari; saat macet, bantuan naik bertahap (ZPD 1–4) tanpa mengulang; balasan ≤ 4 kalimat pendek dan diakhiri satu pertanyaan; balasan yang memuat jawaban akhir diganti petunjuk statis (`tersaring`) |
 | US14 | tahu sedang berada di tahap berpikir yang mana | Penanda fase Input/Elaborasi/Output berubah sesuai langkah yang dikerjakan |
 | US15 | memastikan jawabanku masuk akal | Setelah benar, siswa memilih alasan kewajaran (Validasi) sebelum lanjut; Refleksi bersama Kak Balik boleh dilewati |
 | US12 | membuka materi saat tidak ada sinyal | Materi 1–6 dan Contoh Soal yang pernah dibuka tetap tampil saat offline; menu Latihan/Kuis menampilkan pesan "Butuh internet" yang sopan |
@@ -260,4 +274,5 @@ Untuk database yang sudah berjalan, jalankan `supabase/migrasi_001_bimbingan_ai.
 | Pembimbing AI membocorkan jawaban | Aturan prompt + penyaring angka kunci di server (`saring_balasan`); kunci hanya ada di prompt sistem, tidak pernah dikirim ke HP |
 | Kuota/biaya Gemini habis atau layanan gangguan | Batas `AI_BATAS_PER_JAM` per siswa; jika gagal, siswa otomatis mendapat petunjuk statis |
 | Siswa menulis data pribadi di chat | Pemberitahuan di layar Tentang; tabel `bimbingan_ai` tanpa nama |
-| Pembimbing AI menambah beban ekstrinsik | Panel terlipat secara bawaan, balasan ≤ 2 kalimat, tombol pertanyaan cepat |
+| Pembimbing AI menambah beban ekstrinsik | Panel terlipat secara bawaan, balasan ≤ 4 kalimat pendek satu ide, tombol pertanyaan cepat |
+| Model Gemini dihentikan/diganti Google (404) atau sibuk (503) | Rotasi otomatis ke model cadangan (`MODEL_CADANGAN`); model 404 diingat agar tidak dicoba ulang |

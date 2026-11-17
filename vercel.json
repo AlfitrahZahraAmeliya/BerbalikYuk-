@@ -1,7 +1,8 @@
 {
   "functions": {
     "api/index.py": {
-      "includeFiles": "{app,data,static}/**"
+      "includeFiles": "{app,data,static}/**",
+      "maxDuration": 30
     }
   }
 }

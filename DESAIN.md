@@ -509,7 +509,32 @@ Chip kecil pada judul langkah: `INPUT` (kuning muda), `ELABORASI` (biru muda), `
 ```
 
 ### 9.4 Aturan bahasa AI
-- Maks. 2 kalimat (±40 kata), diakhiri **satu** pertanyaan pemantik.
+- Pertanyaan konsep **dijelaskan** dulu (arti → alasan → contoh sehari-hari), baru diakhiri satu pertanyaan cek pemahaman.
+- Maks. 4 kalimat pendek (±70 kata), satu ide per balasan; baris baru boleh untuk representasi (mis. "a₁ = 4 pekerja, b₁ = 15 hari").
+- Tidak mengulang balasan sebelumnya dan tidak memakai kalimat generik ("bagian mana yang membuatmu bingung?").
 - Tidak pernah menyebut jawaban akhir; bantuan naik bertahap: pemantik → bagian yang dicek → contoh mirip dengan angka lain.
 - Memakai notasi aplikasi (a, b, 1, 2; a₁ × b₁ = a₂ × b₂), ramah, tidak menyalahkan.
 - Panel tidak ditampilkan di Kuis dan Cek Prasyarat (penilaian), serta disembunyikan saat offline atau AI nonaktif.
+
+### 9.5 Tombol melayang & lembar chat (v1.4, menggantikan panel terlipat di 9.2)
+Satu komponen untuk semua halaman belajar. Lembar dibuka dari bawah, **maks 60% layar**, sehingga kartu soal yang menempel di atas tetap terlihat (soal dan bantuan tetap bersamaan, EL02). Lembar tidak menutup otomatis dan tidak terbuka sendiri.
+```
+┌──────────────────────────────┐
+│ [Soal: 4 pekerja … ]  (sticky)│
+│ (1. Input)(2. Elaborasi)(3. …)│
+│ (A) 60 hari                   │
+├──────────────────────────────┤  ← lembar ≤ 60%
+│ 💬 Kak Balik             ✕   │
+│ Pembimbing berpikir, bukan …  │
+│ [Kak Balik                    │
+│  Kita amati dulu:             │
+│  2 orang → 6 jam              │
+│  ┃Giliranmu: Saat orangnya …? │  ← tugas siswa ditonjolkan
+│ (chip)(chip)                  │
+│ [Tulis jawaban…]        ( ➤ ) │
+└──────────────────────────────┘
+Tombol melayang (lembar tertutup):            ( 💬 Kak Balik )  ← kanan bawah
+```
+- Tombol melayang tidak menutupi tombol aksi (konten diberi ruang bawah `body.ada-fab`).
+- Beranda memakai **kartu pengenalan** "Kenalan dengan Kak Balik", bukan tombol melayang.
+- Kuis: tidak ada elemen Kak Balik sama sekali.
