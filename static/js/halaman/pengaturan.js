@@ -4,6 +4,7 @@ import { setSiswa, state } from '../state.js';
 import { sudahTerpasang } from '../pwa.js';
 import { bacaLokal, h, simpanLokal } from '../util.js';
 import { svgIkon } from '../ikon.js';
+import { namaPembimbing } from '../komponen/pembimbing.js';
 
 export function terapkanUkuranHuruf() {
   document.documentElement.classList.toggle('huruf-besar', bacaLokal('huruf-besar', false));
@@ -59,6 +60,8 @@ export function renderTentang(wadah) {
     h('div', { class: 'kartu tumpuk' },
       h('div', { class: 'judul-app' }, h('img', { src: '/static/icons/icon-192.png', alt: '' }), 'BerbalikYuk!'),
       h('p', {}, 'Aplikasi belajar Perbandingan Berbalik Nilai untuk siswa SMP. Dirancang berdasarkan Cognitive Load Theory dan model ADDIE: materi disajikan sedikit demi sedikit, dengan kecepatan yang kamu atur sendiri.'),
+      h('p', {}, `Belajarnya mengikuti model Rigorous Mathematical Thinking: kumpulkan informasi (Input), olah hubungannya (Elaborasi), lalu jawab dan periksa (Output).`),
+      h('p', { class: 'teks-lemah teks-kecil' }, `Pertanyaanmu kepada ${namaPembimbing()} diproses oleh Google Gemini dan disimpan tanpa nama untuk penelitian. Jangan menulis data pribadi, ya.`),
       h('p', { class: 'teks-lemah teks-kecil' }, 'Dikembangkan oleh Alfitrah Zahra Ameliya (2225250181), S1 Pendidikan Matematika, mata kuliah Algoritma dan Pemrograman.'),
     ),
   ));

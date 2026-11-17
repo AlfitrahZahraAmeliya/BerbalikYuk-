@@ -69,6 +69,23 @@ class SupabaseRepo:
             {"siswa_id": siswa_id, "skor": skor, "skor_per_tp": skor_per_tp}
         ).execute()
 
+    def simpan_bimbingan(self, baris):
+        self._tabel("bimbingan_ai").insert(baris).execute()
+
+    def hitung_bimbingan_sejak(self, siswa_id, sejak_iso):
+        hasil = (
+            self._tabel("bimbingan_ai").select("id", count="exact").eq("siswa_id", siswa_id)
+            .gte("created_at", sejak_iso).limit(1).execute()
+        )
+        return hasil.count or 0
+
+    def pernah_benar(self, siswa_id, soal_id):
+        data = (
+            self._tabel("attempts").select("id").eq("siswa_id", siswa_id).eq("soal_id", soal_id)
+            .eq("benar", True).limit(1).execute().data
+        )
+        return bool(data)
+
     def kuis_terakhir(self, siswa_id):
         data = (
             self._tabel("kuis_hasil").select("skor,skor_per_tp,created_at").eq("siswa_id", siswa_id)
@@ -92,6 +109,10 @@ create table if not exists attempts (
 create table if not exists kuis_hasil (
   id integer primary key autoincrement, siswa_id text, skor integer,
   skor_per_tp text, created_at text);
+create table if not exists bimbingan_ai (
+  id integer primary key autoincrement, siswa_id text, sumber text, ref_id text,
+  fase text, mode text, pesan_siswa text, balasan text, tersaring integer,
+  cadangan integer, created_at text);
 """
 
 
@@ -178,6 +199,33 @@ class SqliteRepo:
                 "insert into kuis_hasil (siswa_id, skor, skor_per_tp, created_at) values (?,?,?,?)",
                 (siswa_id, skor, json.dumps(skor_per_tp), _sekarang()),
             )
+
+    def simpan_bimbingan(self, baris):
+        baris = {
+            **baris, "tersaring": int(bool(baris.get("tersaring"))),
+            "cadangan": int(bool(baris.get("cadangan"))), "created_at": _sekarang(),
+        }
+        with self._koneksi() as kon:
+            kon.execute(
+                """insert into bimbingan_ai (siswa_id, sumber, ref_id, fase, mode, pesan_siswa,
+                   balasan, tersaring, cadangan, created_at)
+                   values (:siswa_id, :sumber, :ref_id, :fase, :mode, :pesan_siswa,
+                   :balasan, :tersaring, :cadangan, :created_at)""",
+                baris,
+            )
+
+    def hitung_bimbingan_sejak(self, siswa_id, sejak_iso):
+        baris = self._satu(
+            "select count(*) as n from bimbingan_ai where siswa_id = ? and created_at >= ?",
+            (siswa_id, sejak_iso),
+        )
+        return baris["n"]
+
+    def pernah_benar(self, siswa_id, soal_id):
+        return bool(self._satu(
+            "select id from attempts where siswa_id = ? and soal_id = ? and benar = 1 limit 1",
+            (siswa_id, soal_id),
+        ))
 
     def kuis_terakhir(self, siswa_id):
         baris = self._satu(

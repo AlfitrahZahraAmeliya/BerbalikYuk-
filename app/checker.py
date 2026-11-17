@@ -74,7 +74,7 @@ def _kapital(teks):
     return teks[:1].upper() + teks[1:]
 
 
-def _arah(soal):
+def arah_hubungan(soal):
     """Kembalikan (besaran_berubah, naik?, besaran_dicari, naik?) sesuai jenis soal."""
     nilai, label = soal["nilai"], soal["label"]
     berubah, dicari = ("a", "b") if soal["ditanya"] == "b2" else ("b", "a")
@@ -102,7 +102,7 @@ def pesan_benar(soal):
     awal = f"Tepat! {kunci_tampil(soal)}."
     if not soal.get("nilai"):
         return awal
-    a, a_naik, b, b_naik = _arah(soal)
+    a, a_naik, b, b_naik = arah_hubungan(soal)
     return f"{awal} {_kapital(a)} {_kata(a_naik)}, {b} {_kata(b_naik)}. Masuk akal!"
 
 

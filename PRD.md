@@ -2,11 +2,13 @@
 
 **Nama produk:** *BerbalikYuk!* — Aplikasi Belajar Perbandingan Berbalik Nilai
 **Penyusun:** Alfitrah Zahra Ameliya (NIM 2225250181)
-**Versi dokumen:** 1.1 — 11 November 2026
+**Versi dokumen:** 1.2 — 17 November 2026
 **Status:** Draf, tahap *Design* (ADDIE)
 
 Dokumen terkait: [ANALISIS.md](ANALISIS.md) · [DESAIN.md](DESAIN.md) · [CLAUDE.md](CLAUDE.md) · [README.md](README.md)
 
+> **Perubahan v1.2:** model pembelajaran **Rigorous Mathematical Thinking (RMT)**; **Pembimbing AI "Kak Balik"** (Google Gemini) di Latihan, Contoh Soal, dan Materi; tambah F12 dan F13.
+>
 > **Perubahan v1.1:** aplikasi menjadi **PWA** yang bisa dipasang di HP tanpa Play Store/App Store; backend memakai **Python (Flask)**; tampilan mengadaptasi mockup MathStep; rumus utama **a₁ × b₁ = a₂ × b₂**; tambah F10 dan F11.
 
 ---
@@ -83,6 +85,8 @@ Urutan belajar yang disarankan (EL04, DS02): **Materi 1–6 → Contoh Soal → 
 | F9 | **Kuis** | Kuis | Evaluasi akhir 6 soal campuran tanpa hint (1 per tujuan pembelajaran TP1–TP5, ditambah soal cerita panjang). Layar hasil: skor, trofi statis, tombol *Lihat Pembahasan* dan *Ulangi Kuis* | Metrik keberhasilan |
 | F10 | **Progres & Pengaturan** | Navigasi bawah | Progres: cincin total skor, daftar materi yang sudah dipelajari, skor per tujuan pembelajaran. Pengaturan: ukuran huruf (Normal/Besar), *Pasang Aplikasi*, Keluar | EL03, US2 |
 | F11 | **Instalasi PWA & offline** | Beranda (banner), Pengaturan | Aplikasi bisa dipasang di layar utama HP tanpa Play Store/App Store. Materi dan contoh soal tetap bisa dibuka tanpa internet | Konteks penggunaan |
+| F12 | **Pembimbing AI "Kak Balik"** | Latihan, Contoh Soal, Materi (tidak di Kuis & Cek Prasyarat) | Panel "Tanya Kak Balik" berbasis Google Gemini lewat server Flask. Membimbing proses berpikir per fase RMT, memberi bantuan bertahap sesuai kesulitan, **tidak memberi jawaban akhir** (aturan prompt + penyaring di server). Tombol pertanyaan cepat per fase. Refleksi setelah jawaban benar. Jika AI nonaktif atau gagal, siswa mendapat petunjuk statis | GL03, GL04, K02, EL04, ANALISIS §9 |
+| F13 | **Fase RMT & MLE** | Latihan, Contoh Soal, Materi | Penanda fase **Input → Elaborasi → Output**; langkah **Validasi** setelah benar; *Tujuan*, *Mengapa penting?*, dan layar *transendensi* di setiap materi; Materi 1 dimulai dari konsep sehari-hari | ANALISIS §9 |
 
 ### Aturan buka-kunci latihan
 - **Mudah**: selalu terbuka.
@@ -135,6 +139,9 @@ Untuk soal **pilihan ganda** (Mudah), setiap opsi salah sudah diberi jenis kesal
 | US9 | melatih soal cerita panjang | Latihan Sulit: jawaban hanya bisa dikirim setelah *Diketahui* dan *Ditanya* ditandai |
 | US10 | melihat hasil kuis | Layar hasil menampilkan skor, skor per TP, dan pembahasan setiap soal |
 | US11 | memasang aplikasi di HP tanpa Play Store | Android: tombol *Pasang Aplikasi* memunculkan dialog instalasi Chrome. iPhone: tampil panduan Safari → Bagikan → *Tambahkan ke Layar Utama*. Setelah dipasang, aplikasi terbuka layar penuh tanpa bilah alamat |
+| US13 | dibimbing berpikir saat macet tanpa diberi jawaban | Panel Kak Balik membalas ≤ 2 kalimat dan diakhiri satu pertanyaan; balasan yang memuat jawaban akhir diganti petunjuk statis (`tersaring`) |
+| US14 | tahu sedang berada di tahap berpikir yang mana | Penanda fase Input/Elaborasi/Output berubah sesuai langkah yang dikerjakan |
+| US15 | memastikan jawabanku masuk akal | Setelah benar, siswa memilih alasan kewajaran (Validasi) sebelum lanjut; Refleksi bersama Kak Balik boleh dilewati |
 | US12 | membuka materi saat tidak ada sinyal | Materi 1–6 dan Contoh Soal yang pernah dibuka tetap tampil saat offline; menu Latihan/Kuis menampilkan pesan "Butuh internet" yang sopan |
 
 ## 6. Kebutuhan Non-Fungsional
@@ -201,6 +208,24 @@ alter table public.attempts   enable row level security;
 alter table public.kuis_hasil enable row level security;
 ```
 
+### Tabel tambahan v1.2: percakapan Pembimbing AI
+```sql
+create table public.bimbingan_ai (
+  id           bigint generated always as identity primary key,
+  siswa_id     uuid references public.siswa(id) on delete cascade,
+  sumber       text not null,          -- latihan | contoh | materi
+  ref_id       text not null,          -- id soal / nomor contoh / "<materi>:<layar>"
+  fase         text,                   -- input | elaborasi | output | refleksi
+  mode         text not null,          -- bimbing | refleksi
+  pesan_siswa  text not null,
+  balasan      text not null,
+  tersaring    boolean default false,  -- balasan AI diganti karena menyebut jawaban
+  cadangan     boolean default false,  -- AI gagal, memakai petunjuk statis
+  created_at   timestamptz default now()
+);
+```
+Untuk database yang sudah berjalan, jalankan `supabase/migrasi_001_bimbingan_ai.sql`. Tidak ada nama siswa di tabel ini (hanya `siswa_id`).
+
 ## 8. Di Luar Lingkup (versi ini)
 
 - Halaman/akun guru, rekap kelas, ekspor nilai
@@ -232,3 +257,7 @@ alter table public.kuis_hasil enable row level security;
 | Kuota gratis Supabase / proyek di-*pause* karena tidak aktif | Buka dasbor rutin saat uji coba; cadangkan data sebelum uji coba |
 | Validitas temuan (1 responden) | Konfirmasi lewat uji coba kelompok kecil |
 | Deteksi jenis kesalahan keliru | Bank soal menyimpan alternatif jawaban salah secara eksplisit; pesan umpan balik tidak menyalahkan |
+| Pembimbing AI membocorkan jawaban | Aturan prompt + penyaring angka kunci di server (`saring_balasan`); kunci hanya ada di prompt sistem, tidak pernah dikirim ke HP |
+| Kuota/biaya Gemini habis atau layanan gangguan | Batas `AI_BATAS_PER_JAM` per siswa; jika gagal, siswa otomatis mendapat petunjuk statis |
+| Siswa menulis data pribadi di chat | Pemberitahuan di layar Tentang; tabel `bimbingan_ai` tanpa nama |
+| Pembimbing AI menambah beban ekstrinsik | Panel terlipat secara bawaan, balasan ≤ 2 kalimat, tombol pertanyaan cepat |

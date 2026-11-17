@@ -2,7 +2,7 @@
 import { api, GalatOffline, kirimAntrean } from './api.js';
 import { daftarkanServiceWorker } from './pwa.js';
 import { mulaiRouter } from './router.js';
-import { setSiswa, state } from './state.js';
+import { muatStatusAI, setSiswa, state } from './state.js';
 import { h, toast } from './util.js';
 import { svgIkon } from './ikon.js';
 
@@ -87,6 +87,7 @@ async function mulai() {
   window.addEventListener('offline', () => { state.offline = true; tampilkanOffline(); });
 
   if (!state.offline) kirimAntrean().catch(() => {});
+  if (state.siswa && !state.offline) await muatStatusAI();
 
   mulaiRouter(RUTE, {
     wadah,

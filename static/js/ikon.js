@@ -24,6 +24,8 @@ const PATH = {
   seru: '<circle cx="12" cy="12" r="10"/><path d="M12 7v6M12 17h.01"/>',
   bintang: '<path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z" fill="currentColor"/>',
   ulang: '<path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/>',
+  pesan: '<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"/><path d="M8.5 10.5h7M8.5 13.5h4.5"/>',
+  kirim: '<path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/>',
   huruf: '<path d="M4 20l5-14h2l5 14M6.5 14h7M17 20v-6M20 17h-6"/>',
 };
 

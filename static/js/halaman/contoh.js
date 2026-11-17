@@ -2,7 +2,11 @@
 import { catatProgres, sudahSelesai } from '../state.js';
 import { bacaAngka, h, samaAngka } from '../util.js';
 import { svgIkon } from '../ikon.js';
-import { kepala, panelHint, panelUmpanBalik, pesanGalat, tombolLanjut } from '../komponen/umum.js';
+import { chipFase, kepala, panelHint, panelUmpanBalik, pesanGalat, tombolLanjut } from '../komponen/umum.js';
+import { panelPembimbing } from '../komponen/pembimbing.js';
+
+// Fase RMT tiap langkah: 1–2 Input, 3–5 Elaborasi, 6 Output.
+const FASE_LANGKAH = ['input', 'input', 'elaborasi', 'elaborasi', 'elaborasi', 'output'];
 
 let cacheContoh = null;
 async function muatContoh() {
@@ -101,7 +105,7 @@ function renderContoh(wadah, daftar, n) {
     };
 
     const isi = h('div', { class: 'langkah-isi' },
-      h('h3', {}, `${l.judul}:`),
+      h('h3', {}, chipFase(FASE_LANGKAH[terbuka - 1]), ` ${l.judul}:`),
       h('div', { html: l.isi }),
     );
     const langkahEl = h('div', { class: 'langkah langkah-baru' }, h('span', { class: 'nomor' }, terbuka), isi);
@@ -125,12 +129,19 @@ function renderContoh(wadah, daftar, n) {
     if (terbuka > 1) langkahEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
+  const panel = panelPembimbing({
+    sumber: 'contoh', ref: n,
+    ambilFase: () => FASE_LANGKAH[Math.max(terbuka - 1, 0)],
+    ambilKeadaan: () => ({ langkah_terbuka: terbuka }),
+  });
+
   wadah.append(h('div', { class: 'tumpuk-lebar' },
     kepala({ judul: 'Contoh Soal', kembali: '#/contoh', kanan: `${n} / ${daftar.length}` }),
     h('div', { class: 'kartu-soal' }, h('span', { class: 'label-chip' }, 'Soal:'), h('p', {}, c.soal)),
     h('span', { class: 'label-chip muda' }, 'Pembahasan:'),
     daftarLangkah,
     aksi,
+    panel ? panel.el : null,
   ));
   bukaLangkah();
 }

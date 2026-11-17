@@ -16,6 +16,7 @@ def app(tmp_path):
         "SUPABASE_URL": "",
         "SUPABASE_SERVICE_KEY": "",
         "SQLITE_PATH": str(tmp_path / "uji.db"),
+        "GEMINI_API_KEY": "",  # tes tidak pernah memanggil Gemini sungguhan
     })
 
 

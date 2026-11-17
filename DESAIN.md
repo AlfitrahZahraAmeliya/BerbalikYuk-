@@ -468,3 +468,48 @@ Sebelum layar dianggap selesai:
 - [ ] Target sentuh ≥ 44 px, font ≥ 16 px, tetap rapi dengan opsi Huruf Besar
 - [ ] Rapi di lebar 360 px tanpa gulir horizontal
 - [ ] Rapi saat dibuka sebagai aplikasi terpasang (tanpa bilah alamat, perhatikan *safe area* atas/bawah)
+
+---
+
+## 9. Pembimbing AI "Kak Balik" & Fase RMT
+
+Nama **Kak Balik** diambil dari kata *berbalik* nilai (selaras dengan nama BerbalikYuk!). Nama diatur di satu tempat: `NAMA_PEMBIMBING` (config server).
+
+### 9.1 Penanda fase RMT
+```
+┌───────────┬──────────────┬───────────┐
+│ 1. Input  │ 2. Elaborasi │ 3. Output │   ← aktif = biru, selesai = hijau
+└───────────┴──────────────┴───────────┘
+```
+Chip kecil pada judul langkah: `INPUT` (kuning muda), `ELABORASI` (biru muda), `OUTPUT` (hijau muda).
+
+### 9.2 Panel "Tanya Kak Balik" (terlipat secara bawaan, di layar yang sama)
+```
+┌──────────────────────────────┐
+│ ( 💬 Tanya Kak Balik )        │  ← satu pintu bantuan (menggantikan tombol Petunjuk)
+│ Kak Balik membantumu berpikir │
+│ langkah demi langkah, bukan   │
+│ memberi jawaban.              │
+│        [Ini senilai atau …?]  │  ← gelembung siswa (biru)
+│ [Kak Balik                    │
+│  Coba lihat tabelmu: jika …?] │  ← gelembung pembimbing (biru muda)
+│ (Senilai atau berbalik?)      │  ← tombol cepat sesuai fase
+│ (Angka mana jadi a₂?)         │
+│ [Tulis pertanyaanmu…]  ( ➤ )  │
+└──────────────────────────────┘
+```
+
+### 9.3 Validasi & Refleksi (setelah jawaban benar)
+```
+│ OUTPUT Validasi: mengapa jawabanmu masuk akal? │
+│ ( Pekerja bertambah, hari berkurang )          │
+│ ( Pekerja bertambah, hari bertambah )          │
+│ ( 💬 Refleksi bersama Kak Balik (boleh dilewati) ) │
+│ ( Soal berikutnya → )                          │
+```
+
+### 9.4 Aturan bahasa AI
+- Maks. 2 kalimat (±40 kata), diakhiri **satu** pertanyaan pemantik.
+- Tidak pernah menyebut jawaban akhir; bantuan naik bertahap: pemantik → bagian yang dicek → contoh mirip dengan angka lain.
+- Memakai notasi aplikasi (a, b, 1, 2; a₁ × b₁ = a₂ × b₂), ramah, tidak menyalahkan.
+- Panel tidak ditampilkan di Kuis dan Cek Prasyarat (penilaian), serta disembunyikan saat offline atau AI nonaktif.

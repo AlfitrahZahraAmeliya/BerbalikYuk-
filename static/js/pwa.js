@@ -48,8 +48,14 @@ export function daftarkanServiceWorker() {
   window.addEventListener('load', async () => {
     try {
       const reg = await navigator.serviceWorker.register('/sw.js');
+      // Muat ulang HANYA jika siswa mengetuk "Versi baru tersedia". Saat pertama kali dibuka,
+      // clients.claim() juga memicu controllerchange; jangan memuat ulang (isian bisa hilang).
+      let mintaMuatUlang = false;
       const tawarkanPembaruan = (sw) => {
-        toast('Versi baru tersedia — ketuk untuk memuat ulang.', () => sw.postMessage('SKIP_WAITING'));
+        toast('Versi baru tersedia — ketuk untuk memuat ulang.', () => {
+          mintaMuatUlang = true;
+          sw.postMessage('SKIP_WAITING');
+        });
       };
       if (reg.waiting && navigator.serviceWorker.controller) tawarkanPembaruan(reg.waiting);
       reg.addEventListener('updatefound', () => {
@@ -60,7 +66,7 @@ export function daftarkanServiceWorker() {
       });
       let sudahMuatUlang = false;
       navigator.serviceWorker.addEventListener('controllerchange', () => {
-        if (sudahMuatUlang) return;
+        if (!mintaMuatUlang || sudahMuatUlang) return;
         sudahMuatUlang = true;
         window.location.reload();
       });

@@ -76,4 +76,6 @@ export const api = {
   periksa: (data) => panggil('POST', '/api/periksa', data),
   kuis: () => panggil('GET', '/api/kuis'),
   kirimKuis: (jawaban) => panggil('POST', '/api/kuis/kirim', { jawaban }),
+  statusPembimbing: () => panggil('GET', '/api/pembimbing/status'),
+  pembimbing: (data) => panggil('POST', '/api/pembimbing', data),
 };

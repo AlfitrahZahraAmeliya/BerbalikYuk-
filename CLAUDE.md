@@ -20,6 +20,7 @@ Setiap fitur baru harus bisa dirujuk ke ID fitur di PRD dan, jika memungkinkan, 
 | PWA | `manifest.webmanifest` + service worker `sw.js` |
 | Database | **Supabase** (PostgreSQL), diakses **hanya dari Flask** |
 | Hosting | **Vercel** (runtime Python, HTTPS gratis). Alternatif: Render |
+| Pembimbing AI | **Google Gemini** (REST `generateContent`) lewat `httpx`, **hanya dari Flask** |
 | Uji | `pytest` |
 
 Versi dipatok di `requirements.txt` (mis. `Flask==3.0.3`, `supabase==2.34.1`, `python-dotenv==1.0.1`, `pytest==8.3.3`). Font Nunito dari Google Fonts. Jangan menambah library frontend.
@@ -46,6 +47,7 @@ app/
   auth.py                    # daftar, masuk, keluar, dekorator @wajib_login
   bank_soal.py               # memuat data/*.json sekali; soal_publik() membuang kunci
   checker.py                 # FUNGSI MURNI: periksa_jawaban(), deteksi jenis kesalahan
+  pembimbing.py              # Pembimbing AI: prompt RMT, konteks dari server, Gemini, penyaring jawaban
   routes_halaman.py          # "/", "/sw.js", "/manifest.webmanifest" (disajikan dari root)
   routes_api.py              # semua endpoint /api/*
 data/                        # RAHASIA — tidak boleh disajikan sebagai file statis
@@ -65,11 +67,13 @@ static/
     pwa.js                   # beforeinstallprompt, deteksi iOS & standalone, banner pasang
     halaman/  masuk.js, beranda.js, materi.js, simulasi.js, contoh.js,
               latihan.js, kuis.js, progres.js, pengaturan.js
-    komponen/ umum.js (kepala, panel umpan balik, hint), tabel-rumus.js, simulasi.js
+    komponen/ umum.js (kepala, umpan balik, hint, fase RMT), tabel-rumus.js, simulasi.js,
+              pembimbing.js (panel "Tanya Kak Balik")
   data/                      # PUBLIK — di-cache untuk offline
     materi.json              # isi Cek Prasyarat & Materi 1–6 per layar (dinilai di HP; formatif)
     contoh.json              # 3 contoh soal + pembahasan (bukan bahan penilaian)
-supabase/schema.sql          # salinan SQL dari PRD.md §7
+supabase/schema.sql          # salinan SQL dari PRD.md §7 (+ tabel bimbingan_ai)
+supabase/migrasi_001_bimbingan_ai.sql  # untuk database yang sudah berjalan
 tools/buat_ikon.py           # membuat ikon PNG (python tools/buat_ikon.py)
 tests/
   test_checker.py
@@ -92,6 +96,10 @@ Semua request/response berupa JSON. Endpoint selain daftar/masuk wajib login (`@
 | POST `/api/periksa` | `{soal_id, jawaban, isian_tabel?, hint_level, durasi_detik}` | `{benar, jenis_kesalahan, pesan, pembahasan?}` |
 | GET `/api/kuis` | — | 6 soal publik |
 | POST `/api/kuis/kirim` | `{jawaban: {soal_id: nilai}}` | `{skor, skor_per_tp, pembahasan: [...]}` |
+| GET `/api/pembimbing/status` | — | `{aktif, nama}` |
+| POST `/api/pembimbing` | `{sumber: latihan\|contoh\|materi, ref, mode: bimbing\|refleksi, fase, keadaan, pesan (≤300), riwayat (≤6)}` | `{balasan, tersaring, cadangan, nama}` · `503` AI nonaktif · `429` batas per jam · `403` tingkat terkunci |
+
+`/api/periksa` yang benar juga mengembalikan `arah` (`{berubah, naik, dicari, dicari_naik}`) untuk langkah Validasi.
 
 Format galat seragam: `{"galat": "pesan ramah untuk siswa"}`.
 
@@ -128,6 +136,17 @@ Saat menambah atau mengubah UI, patuhi [DESAIN.md](DESAIN.md):
 9. Tanpa gamifikasi (poin, lencana, leaderboard).
 
 Jika permintaan bertentangan dengan aturan ini, sampaikan dulu ke pengguna sebelum mengerjakan.
+
+## Pembimbing AI "Kak Balik" (F12) & RMT (F13)
+- Nama tutor hanya di `NAMA_PEMBIMBING` (config). UI mengambilnya dari `/api/pembimbing/status`.
+- **Kunci Gemini (`GEMINI_API_KEY`) hanya di `.env`/Vercel.** Browser tidak pernah memanggil Gemini. Jangan mencatat header/URL permintaan Gemini.
+- Konteks soal dibangun **dari data server** (`bank_soal`, `static/data/*.json`), bukan dari klien. Kunci ditandai `[RAHASIA]` di prompt sistem dan **tidak pernah** dikirim ke HP.
+- Teks siswa dibungkus `<pesan_siswa>` dan diperlakukan sebagai data, bukan instruksi.
+- Lapisan pengaman jawaban: aturan prompt + `saring_balasan()` (angka kunci; jika kunci juga tertulis di soal, yang diblokir adalah angka + satuan). Balasan tersaring/galat → petunjuk statis (`petunjuk_cadangan`).
+- Mode `refleksi` hanya untuk soal latihan yang sudah dijawab benar oleh siswa itu (dicek di DB).
+- Setiap percakapan disimpan di `bimbingan_ai` (tanpa nama). Batas `AI_BATAS_PER_JAM` dihitung dari DB.
+- AI **tidak** dipasang di Kuis dan Cek Prasyarat.
+- Fase RMT di UI: Input (diketahui/ditanya) → Elaborasi (hubungan, tabel, rumus) → Output (jawaban, Validasi) → Refleksi. Saat mengubah prompt, pertahankan aturan: ≤ 2 kalimat, satu pertanyaan, tanpa jawaban akhir, bantuan bertahap.
 
 ## Format Bank Soal
 `data/soal.json` berisi daftar soal. Contoh pilihan ganda (Mudah):
@@ -217,6 +236,16 @@ Contoh isian (Sulit):
 - Folder `data/` tidak boleh bisa diakses lewat URL. Uji: `GET /data/soal.json` harus `404`.
 - Pesan galat login dibuat umum ("Username atau kata sandi salah") agar username tidak bisa ditebak.
 
+## Variabel Lingkungan
+| Nama | Wajib | Keterangan |
+|---|---|---|
+| `SECRET_KEY` | ya (produksi) | Penanda tangan cookie sesi |
+| `SUPABASE_URL`, `SUPABASE_SERVICE_KEY` | ya (produksi) | Kosong = SQLite lokal |
+| `GEMINI_API_KEY` | tidak | Kosong = Kak Balik nonaktif (petunjuk statis) |
+| `GEMINI_MODEL` | tidak | Bawaan `gemini-2.5-flash` |
+| `NAMA_PEMBIMBING` | tidak | Bawaan `Kak Balik` |
+| `AI_BATAS_PER_JAM` | tidak | Bawaan 40 pertanyaan per siswa per jam |
+
 ## Menjalankan Lokal
 Jika `SUPABASE_URL`/`SUPABASE_SERVICE_KEY` kosong, aplikasi otomatis memakai **SQLite** di `instance/berbalikyuk.db` (cukup untuk pengembangan; pengujian juga memakai SQLite sementara). Di Vercel, Supabase wajib diisi.
 ```bash
@@ -238,12 +267,15 @@ pytest                                # jalankan pengujian
 ## Pengujian
 - `tests/test_checker.py`: untuk **setiap** soal di `soal.json` dan `kuis.json`, kunci → `benar`; setiap opsi salah/`jawabanSalah` → terdeteksi sesuai jenisnya; hasil rumus senilai → `salah_jenis`.
 - `tests/test_api.py` (database SQLite sementara, tanpa mock): daftar/masuk/keluar, `401` tanpa sesi, `/api/latihan/*` tidak memuat `kunci`, tingkat terkunci → `403`, `GET /data/soal.json` → `404`.
+- `tests/test_pembimbing.py`: Gemini **selalu ditiru** (monkeypatch `pembimbing.minta_gemini`). Mencakup status, validasi, 503/429/403, penyaring untuk setiap soal, cadangan statis, riwayat, refleksi, dan pencatatan `bimbingan_ai`.
+- Saat menguji server lokal, **kosongkan `SUPABASE_URL`/`SUPABASE_SERVICE_KEY` di variabel lingkungan** agar tidak menulis ke database produksi dari `.env`.
 - Manual: checklist [DESAIN.md §8](DESAIN.md#8-checklist-desain-per-layar); Lighthouse (kategori PWA *installable*); alur daftar → keluar → masuk lagi → progres masih ada; mode pesawat → Materi tetap terbuka.
 
 ## Yang Tidak Boleh Dilakukan
 - Menambah framework/bundler frontend atau memanggil Supabase langsung dari JavaScript.
 - Mengirim kunci jawaban, pembahasan, atau jenis kesalahan opsi ke klien sebelum siswa menjawab.
 - Men-cache respons `/api/*` di service worker.
+- Memanggil Gemini dari JavaScript, mengirim kunci jawaban ke klien, atau melonggarkan aturan "tanpa jawaban akhir" pada prompt.
 - Menambah halaman guru atau fitur di luar PRD tanpa persetujuan.
 - Mengubah notasi (a, b, 1, 2; rumus a₁ × b₁ = a₂ × b₂) yang sudah ditetapkan.
 - Menyimpan data pribadi selain nama panggilan, kelas, dan username.

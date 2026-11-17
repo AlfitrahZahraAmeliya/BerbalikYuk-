@@ -49,6 +49,34 @@ export function pesanGalat(teks, aksiUlang) {
   );
 }
 
+/** Fase RMT: Input → Elaborasi → Output. aktif = 'input' | 'elaborasi' | 'output' | 'refleksi'. */
+export const FASE_RMT = [
+  { id: 'input', judul: 'Input', arti: 'Kumpulkan informasi' },
+  { id: 'elaborasi', judul: 'Elaborasi', arti: 'Olah hubungan & rumus' },
+  { id: 'output', judul: 'Output', arti: 'Jawab & periksa' },
+];
+
+export function faseRMT(aktif) {
+  const el = h('ol', { class: 'fase-rmt', 'aria-label': 'Tahap berpikir' });
+  const gambar = (baru) => {
+    const urutan = FASE_RMT.findIndex((f) => f.id === baru);
+    const semuaSelesai = baru === 'refleksi';
+    el.replaceChildren(...FASE_RMT.map((f, n) => h('li', {
+      class: semuaSelesai || n < urutan ? 'selesai' : n === urutan ? 'aktif' : null,
+      'aria-current': n === urutan ? 'step' : null,
+      title: f.arti,
+    }, f.judul)));
+  };
+  gambar(aktif);
+  return { el, set: gambar };
+}
+
+/** Chip kecil nama fase untuk judul langkah. */
+export function chipFase(fase) {
+  const f = FASE_RMT.find((x) => x.id === fase);
+  return f ? h('span', { class: `chip-fase ${fase}` }, f.judul) : null;
+}
+
 /** Tombol "Lanjut" dengan panah. */
 export function tombolLanjut(teks = 'Lanjut', onclick, props = {}) {
   return h('button', { class: 'tombol', onclick, ...props }, teks, ' →');

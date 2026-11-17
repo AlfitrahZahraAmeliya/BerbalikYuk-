@@ -4,8 +4,13 @@ import { api, GalatApi } from '../api.js';
 import { catatProgres, muatProgres, skor, tingkatTerbuka } from '../state.js';
 import { bacaAngka, denganSatuan, h } from '../util.js';
 import { svgIkon } from '../ikon.js';
-import { kepala, panelHint, panelUmpanBalik, pesanGalat, progressBar, tombolLanjut } from '../komponen/umum.js';
+import {
+  chipFase, faseRMT, kepala, panelHint, panelUmpanBalik, pesanGalat, progressBar, tombolLanjut,
+} from '../komponen/umum.js';
+import { aiTersedia, namaPembimbing, panelPembimbing } from '../komponen/pembimbing.js';
 import { tabelRumus } from '../komponen/tabel-rumus.js';
+
+const kapital = (t) => t.charAt(0).toUpperCase() + t.slice(1);
 
 const TINGKAT = [
   { id: 'mudah', judul: 'Mudah', keterangan: 'Pilihan ganda, angka langsung' },
@@ -134,7 +139,7 @@ function renderSesi(wadah, tingkat, daftarSoal) {
       }, h('span', {}, `Soal ${n + 1}: ${hasilPertama[s.id] ? 'benar langsung' : 'perlu diulang'}`)))),
       h('p', { class: 'tengah' }, lolos
         ? (berikut ? `Hebat! Tingkat ${berikut.judul} sekarang terbuka.` : 'Hebat! Kamu siap mengerjakan Kuis.')
-        : 'Ayo ulangi sekali lagi. Pakai Petunjuk jika bingung, ya.'),
+        : `Ayo ulangi sekali lagi. ${aiTersedia() ? `Tanya ${namaPembimbing()}` : 'Pakai Petunjuk'} jika bingung, ya.`),
       lolos && berikut ? h('a', { class: 'tombol tombol-penuh', href: `#/latihan/${berikut.id}` }, `Lanjut ke ${berikut.judul} →`) : null,
       lolos && !berikut ? h('a', { class: 'tombol tombol-penuh', href: '#/kuis' }, 'Kerjakan Kuis →') : null,
       h('button', { class: `tombol ${lolos ? 'tombol-garis ' : ''}tombol-penuh`, onclick: () => window.dispatchEvent(new HashChangeEvent('hashchange')) }, 'Ulangi Latihan'),
@@ -152,11 +157,29 @@ function renderSesi(wadah, tingkat, daftarSoal) {
     let hintLevel = 0;
     let selesai = false;
 
-    const slotUmpanBalik = h('div');
+    // ---- Fase RMT: Input → Elaborasi → Output → Refleksi ----
+    let fase = soal.tingkat === 'sulit' ? 'input' : 'elaborasi';
+    const penandaFase = faseRMT(fase);
+    const setFase = (baru) => { fase = baru; penandaFase.set(baru); };
+
+    // Keadaan siswa yang dikirim ke pembimbing AI (tanpa data pribadi).
+    const keadaan = { jawaban_terakhir: null, jenis_kesalahan: null };
+    let keadaanTambahan = () => ({});
+    const ambilKeadaan = () => ({ ...keadaan, percobaan, ...keadaanTambahan() });
+
+    const slotUmpanBalik = h('div', { class: 'tumpuk' });
     const slotHint = h('div', { class: 'tumpuk' });
     const tombolCek = h('button', { class: 'tombol', type: 'button', disabled: true }, 'Cek Jawaban');
     const tombolHint = h('button', { class: 'tombol tombol-garis', type: 'button', html: `${svgIkon('lampu')} Petunjuk` });
-    const barisAksi = h('div', { class: 'baris-tombol' }, tombolHint, tombolCek);
+
+    // Satu pintu bantuan: pembimbing AI jika aktif, petunjuk statis jika tidak.
+    const panel = panelPembimbing({
+      sumber: 'latihan', ref: soal.id, ambilFase: () => fase, ambilKeadaan,
+      saatBertanya: () => { hintLevel = Math.min(3, hintLevel + 1); },
+    });
+    const aksiAwal = () => (panel ? [tombolCek] : [tombolHint, tombolCek]);
+    const barisAksi = h('div', { class: 'baris-tombol' }, ...aksiAwal());
+    if (panel) slotHint.append(panel.el);
 
     tombolHint.addEventListener('click', async () => {
       if (hintLevel >= soal.jumlah_hint) return;
@@ -173,6 +196,46 @@ function renderSesi(wadah, tingkat, daftarSoal) {
     });
 
     const lanjut = () => { i += 1; renderSoal(); window.scrollTo(0, 0); };
+    const tombolBerikut = () => tombolLanjut(i + 1 < daftarSoal.length ? 'Soal berikutnya' : 'Lihat hasil', lanjut);
+
+    function setelahValidasi() {
+      setFase('refleksi');
+      const refleksi = panelPembimbing({
+        sumber: 'latihan', ref: soal.id, mode: 'refleksi', ambilFase: () => 'refleksi', ambilKeadaan,
+        judul: `Refleksi bersama ${namaPembimbing()} (boleh dilewati)`,
+      });
+      if (refleksi) slotUmpanBalik.append(refleksi.el);
+      barisAksi.replaceChildren(tombolBerikut());
+    }
+
+    /** Fase Output — Validasi: siswa memeriksa kewajaran lewat arah hubungan (bukan coba-coba). */
+    function validasi(arah) {
+      const kata = (naik) => (naik ? 'bertambah' : 'berkurang');
+      const awal = `${kapital(arah.berubah)} ${kata(arah.naik)}, ${arah.dicari}`;
+      const pilihan = [
+        { teks: `${awal} ${kata(arah.dicari_naik)}`, benar: true },
+        { teks: `${awal} ${kata(!arah.dicari_naik)}`, benar: false },
+      ].sort(() => Math.random() - 0.5);
+      const slot = h('div');
+      const tombol = pilihan.map((p) => h('button', {
+        class: 'opsi', type: 'button',
+        onclick: (e) => {
+          if (p.benar) {
+            tombol.forEach((t) => { t.disabled = true; });
+            e.currentTarget.classList.add('benar');
+            slot.replaceChildren(panelUmpanBalik(true, 'Tepat! Arah perubahannya sesuai, jadi jawabanmu masuk akal.'));
+            setelahValidasi();
+          } else {
+            e.currentTarget.classList.add('salah');
+            slot.replaceChildren(panelUmpanBalik(false, 'Lihat lagi tabelmu: dari baris 1 ke baris 2, angkanya naik atau turun?'));
+          }
+        },
+      }, p.teks));
+      return h('div', { class: 'kartu tumpuk' },
+        h('h3', {}, chipFase('output'), ' Validasi: mengapa jawabanmu masuk akal?'),
+        h('div', { class: 'daftar-opsi' }, tombol),
+        slot);
+    }
 
     async function cek(dataJawaban, setelah) {
       percobaan += 1;
@@ -182,17 +245,31 @@ function renderSesi(wadah, tingkat, daftarSoal) {
           soal_id: soal.id, ...dataJawaban, hint_level: hintLevel, percobaan,
           durasi_detik: Math.round((Date.now() - mulai) / 1000),
         });
+        keadaan.jawaban_terakhir = dataJawaban.jawaban;
+        keadaan.jenis_kesalahan = r.jenis_kesalahan;
         if (!(soal.id in hasilPertama)) hasilPertama[soal.id] = r.benar;
         slotUmpanBalik.replaceChildren(panelUmpanBalik(r.benar, r.pesan, r.pembahasan || null));
         setelah(r);
-        if (r.benar || r.pembahasan) {
-          selesai = r.benar;
-          barisAksi.replaceChildren(...[
-            r.benar ? null : h('button', { class: 'tombol tombol-garis', type: 'button', onclick: () => { tombolCek.disabled = false; barisAksi.replaceChildren(tombolHint, tombolCek); } }, 'Coba lagi'),
-            tombolLanjut(i + 1 < daftarSoal.length ? 'Soal berikutnya' : 'Lihat hasil', lanjut),
-          ].filter(Boolean));
+        if (r.benar) {
+          selesai = true;
+          if (panel) panel.el.hidden = true;
+          setFase('output');
+          barisAksi.replaceChildren();
+          if (r.arah) slotUmpanBalik.append(validasi(r.arah));
+          else setelahValidasi();
+        } else if (r.pembahasan) {
+          barisAksi.replaceChildren(
+            h('button', { class: 'tombol tombol-garis', type: 'button', onclick: () => { tombolCek.disabled = false; barisAksi.replaceChildren(...aksiAwal()); } }, 'Coba lagi'),
+            tombolBerikut(),
+          );
         } else {
           tombolCek.disabled = false;
+        }
+        // Eliminasi coba-coba (RMT): setelah 2 kali salah, ajak berpikir bersama, bukan menebak.
+        if (!r.benar && percobaan >= 2 && panel) {
+          slotUmpanBalik.append(h('p', { class: 'teks-kecil teks-lemah' },
+            `Daripada menebak, yuk pikirkan bersama ${namaPembimbing()} di atas.`));
+          panel.buka();
         }
         slotUmpanBalik.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       } catch (galat) {
@@ -224,10 +301,11 @@ function renderSesi(wadah, tingkat, daftarSoal) {
       }));
       isi.append(h('div', { class: 'daftar-opsi' }, opsi));
     } else {
-      // Isian: tentukan hubungan → isi tabel → jawab
+      // Isian: Elaborasi (hubungan → tabel/representasi → rumus/manipulasi) lalu Output (jawaban).
       let hubungan = null;
-      const tabel = tabelRumus({ label: soal.label, ditanya: soal.ditanya, mode: 'input', onUbah: perbaruiCek });
-      const inputJawaban = h('input', { class: 'input', id: 'jawaban', inputmode: 'decimal', autocomplete: 'off', oninput: perbaruiCek });
+      const tabel = tabelRumus({ label: soal.label, ditanya: soal.ditanya, mode: 'input', onUbah: () => perbaruiCek() });
+      keadaanTambahan = () => ({ hubungan, isian_tabel: tabel.isian() });
+      const inputJawaban = h('input', { class: 'input', id: 'jawaban', inputmode: 'decimal', autocomplete: 'off', oninput: () => perbaruiCek() });
       const pilihanHubungan = [['senilai', 'Senilai'], ['berbalik', 'Berbalik nilai']].map(([nilai, teks]) => h('button', {
         class: 'opsi', type: 'button', 'aria-pressed': 'false',
         onclick: (e) => {
@@ -240,6 +318,7 @@ function renderSesi(wadah, tingkat, daftarSoal) {
 
       function perbaruiCek() {
         tombolCek.disabled = selesai || !(hubungan && tabel.terisiSemua() && bacaAngka(inputJawaban.value) != null);
+        if (!selesai && fase !== 'input') setFase(hubungan && tabel.terisiSemua() ? 'output' : 'elaborasi');
       }
 
       tombolCek.addEventListener('click', () => cek({
@@ -254,11 +333,11 @@ function renderSesi(wadah, tingkat, daftarSoal) {
 
       const satuan = soal.satuan === 'rupiah' ? 'rupiah' : soal.satuan;
       const langkahIsian = h('div', { class: 'tumpuk-lebar' },
-        h('div', { class: 'tumpuk' }, h('h3', {}, '1. Tentukan hubungan'),
+        h('div', { class: 'tumpuk' }, h('h3', {}, chipFase('elaborasi'), ' 1. Tentukan hubungan'),
           h('p', { class: 'teks-lemah teks-kecil' }, `Jika ${soal.label.a} bertambah, ${soal.label.b} bertambah atau berkurang?`),
           h('div', { class: 'dua-pilihan' }, pilihanHubungan)),
-        h('div', { class: 'tumpuk' }, h('h3', {}, '2. Isi tabel dari soal'), tabel.el),
-        h('div', { class: 'tumpuk' }, h('label', { for: 'jawaban' }, h('h3', {}, '3. Jawaban')),
+        h('div', { class: 'tumpuk' }, h('h3', {}, chipFase('elaborasi'), ' 2. Isi tabel, lihat rumusnya'), tabel.el),
+        h('div', { class: 'tumpuk' }, h('label', { for: 'jawaban' }, h('h3', {}, chipFase('output'), ' 3. Jawaban')),
           h('div', { class: 'input-jawaban' },
             soal.satuan === 'rupiah' ? h('span', {}, 'Rp') : null,
             inputJawaban,
@@ -269,11 +348,11 @@ function renderSesi(wadah, tingkat, daftarSoal) {
         const penanda = penandaSoal(soal.teks, () => {
           penanda.alat.replaceWith(langkahIsian);
           barisAksi.hidden = false;
-          tombolHint.hidden = false;
+          setFase('elaborasi');
         });
         kartuSoal = penanda.kartu;
         barisAksi.hidden = true;
-        isi.append(h('div', { class: 'tumpuk' }, h('h3', {}, 'Langkah awal: tandai informasi'), penanda.alat));
+        isi.append(h('div', { class: 'tumpuk' }, h('h3', {}, chipFase('input'), ' Langkah awal: tandai informasi'), penanda.alat));
       } else {
         isi.append(langkahIsian);
       }
@@ -284,6 +363,7 @@ function renderSesi(wadah, tingkat, daftarSoal) {
       pilihTingkat(tingkat),
       progressBar(i + 1, daftarSoal.length),
       kartuSoal,
+      penandaFase.el,
       isi,
       slotHint,
       slotUmpanBalik,

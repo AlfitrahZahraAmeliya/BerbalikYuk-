@@ -30,6 +30,8 @@ Aplikasi ini dirancang untuk **mengurangi beban kognitif yang tidak perlu (extra
 6. **Kuis** akhir beserta pembahasan.
 7. **Progres belajar** dan pengaturan ukuran huruf.
 8. **Bisa dipasang di HP** dan materi tetap bisa dibuka tanpa internet.
+9. **Pembimbing AI "Kak Balik"** (Google Gemini) di Latihan, Contoh Soal, dan Materi. Kak Balik membimbing langkah berpikir dengan pertanyaan, bukan memberi jawaban.
+10. **Model Rigorous Mathematical Thinking (RMT)**: setiap soal dikerjakan melalui fase **Input → Elaborasi → Output**, dilanjutkan Validasi dan Refleksi.
 
 ## Teknologi
 | Bagian | Teknologi |
@@ -38,6 +40,7 @@ Aplikasi ini dirancang untuk **mengurangi beban kognitif yang tidak perlu (extra
 | Server (backend) | **Python** — Flask |
 | Database | Supabase (PostgreSQL) |
 | Instalasi di HP | Progressive Web App (manifest + service worker) |
+| Pembimbing AI | Google Gemini (dipanggil dari server Python) |
 | Hosting | Vercel |
 
 Penilaian jawaban dilakukan oleh server Python, sehingga kunci jawaban tidak bisa diintip dari HP.
@@ -83,9 +86,19 @@ Butuh **Python 3.11+**. Akun **Supabase** (gratis) baru diperlukan untuk deploy.
    pytest
    ```
 
+## Mengaktifkan Pembimbing AI "Kak Balik"
+1. Buat API key gratis di [Google AI Studio](https://aistudio.google.com/apikey).
+2. Tempel ke file `.env` (jangan dibagikan atau di-commit):
+   ```
+   GEMINI_API_KEY=...kunci Anda...
+   GEMINI_MODEL=gemini-2.5-flash
+   ```
+3. Jika database Supabase sudah berjalan sebelumnya, jalankan **sekali** isi `supabase/migrasi_001_bimbingan_ai.sql` di SQL Editor Supabase.
+4. Jalankan ulang server. Jika `GEMINI_API_KEY` kosong, aplikasi tetap berjalan dengan petunjuk statis.
+
 ## Deploy ke Vercel
 1. Unggah proyek ke GitHub, lalu impor repositorinya di [vercel.com](https://vercel.com).
-2. Di **Settings → Environment Variables**, isi `SUPABASE_URL`, `SUPABASE_SERVICE_KEY`, dan `SECRET_KEY`.
+2. Di **Settings → Environment Variables**, isi `SUPABASE_URL`, `SUPABASE_SERVICE_KEY`, `SECRET_KEY`, dan `GEMINI_API_KEY`.
 3. Deploy. Alamat yang didapat (`https://….vercel.app`) sudah HTTPS, sehingga aplikasi bisa dipasang di HP.
 
 ## Dokumen Perencanaan

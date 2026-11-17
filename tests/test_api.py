@@ -127,3 +127,10 @@ def test_kuis_jawaban_teks_panjang_tidak_terpotong(klien_masuk):
     assert any(isinstance(v, str) and len(v) > 40 for v in semua_benar.values())
     data = klien_masuk.post("/api/kuis/kirim", json={"jawaban": semua_benar}).get_json()
     assert data["skor"] == 100
+
+
+def test_arah_hubungan_hanya_setelah_benar(klien_masuk):
+    salah = klien_masuk.post("/api/periksa", json={"soal_id": "L1-06", "jawaban": 36}).get_json()
+    assert "arah" not in salah
+    benar = klien_masuk.post("/api/periksa", json={"soal_id": "L1-06", "jawaban": 9}).get_json()
+    assert benar["arah"] == {"berubah": "pekerja", "naik": True, "dicari": "hari", "dicari_naik": False}

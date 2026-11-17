@@ -163,3 +163,33 @@ Siswa yang belum lulus cek prasyarat **tetap boleh lanjut**, tetapi akan diberi 
 
 - Data berasal dari **satu responden** (S01). Temuan perlu dikonfirmasi saat uji coba (tahap *Implement* & *Evaluate*), misalnya lewat uji kelompok kecil dan angket *cognitive load*.
 - Responden adalah siswa kelas 8 yang mengingat pengalaman kelas 7, jadi ada kemungkinan bias ingatan.
+
+---
+
+## 9. Kerangka Rigorous Mathematical Thinking (RMT)
+
+Rujukan: Kinard & Kozulin, *Rigorous Mathematical Thinking: Conceptual Formation in the Mathematics Classroom*. RMT memadukan teori sosiokultural **Vygotsky** (alat psikologis, konsep ilmiah, *Learning Activity*) dengan **Feuerstein** (fungsi kognitif dan *Mediated Learning Experience*/MLE). Di aplikasi ini, peran mediator dijalankan oleh rancangan langkah dan **Pembimbing AI "Kak Balik"**.
+
+### 9.1 Pemetaan unsur RMT → temuan wawancara → fitur
+
+| Unsur RMT | Temuan terkait | Penerapan di aplikasi |
+|---|---|---|
+| **Fase Input**: persepsi jelas, ketepatan mengumpulkan data | K03, EL05, IL05 (salah memahami maksud soal) | Langkah *Diketahui/Ditanya*, mode tandai (Latihan Sulit), chip fase **Input** |
+| **Fase Elaborasi**: menganalisis hubungan, perencanaan | IL01, IL02 (tertukar angka) | Tentukan hubungan → tabel a/b (**representasi**) → rumus a₁ × b₁ = a₂ × b₂ (**manipulasi**), chip fase **Elaborasi** |
+| **Fase Output**: komunikasi tepat, tanpa coba-coba | GL02 (cek kewajaran), IL05 | Jawaban + satuan, langkah **Validasi** (arah hubungan) setelah benar; setelah 2× salah siswa diarahkan ke Kak Balik, bukan menebak |
+| **Alat psikologis**: simbol, tabel, rumus, bahasa matematika | EL02, DS01 | Notasi a₁ b₁ a₂ b₂, tabel perbandingan, kotak rumus yang terisi otomatis |
+| **MLE: Intensionalitas** | EL04 (tempo terlalu cepat) | Baris *Tujuan* di awal setiap materi |
+| **MLE: Makna** | GL01 (konteks sehari-hari) | Baris "Mengapa penting?" di awal setiap materi |
+| **MLE: Transendensi** | GL05 (transfer ke cerita lain) | Layar penutup "Hubungkan dengan duniamu" di setiap materi; refleksi setelah latihan |
+| **Konsep sehari-hari → ilmiah** (Vygotsky) | K01, GL01 | Materi 1 dimulai dari pengalaman kerja bakti, lalu dirumuskan menjadi konsep |
+| **Learning Activity**: analisis tugas, perencanaan, refleksi | GL03, GL04 | Enam langkah tetap + **Refleksi bersama Kak Balik** |
+| **ZPD & asesmen dinamis** (bantuan bertahap) | GL03 (petunjuk bertahap) | Bantuan Kak Balik naik tingkat sesuai kesulitan: pemantik → bagian yang dicek → contoh mirip |
+| **Siklus Representasi – Manipulasi – Validasi** | IL02, GL02 | Tabel → rumus → validasi arah hubungan |
+
+### 9.2 Peran Pembimbing AI terhadap beban kognitif
+
+| Beban | Strategi Kak Balik |
+|---|---|
+| **Intrinsik** | Satu langkah kecil per balasan, fokus pada fase yang sedang dikerjakan |
+| **Ekstrinsik** | Maks. 2 kalimat (±40 kata), tombol pertanyaan cepat agar tidak perlu mengetik, panel di layar yang sama, hanya 2 giliran terakhir terlihat |
+| **Germane** | Pertanyaan pemantik "mengapa", validasi, refleksi, dan transendensi |

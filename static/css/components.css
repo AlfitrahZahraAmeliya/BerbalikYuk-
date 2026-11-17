@@ -463,3 +463,71 @@ input.sel { padding: var(--s3) var(--s2) var(--s1); }
 .judul-tengah { justify-content: center; }
 .langkah-isi > span svg { display: inline-block; width: 22px; height: 22px; vertical-align: middle; margin-right: 6px; }
 .panel-hint > span { display: contents; }
+
+/* ---------- Fase RMT (Input → Elaborasi → Output) ---------- */
+.fase-rmt {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px;
+  counter-reset: fase;
+}
+.fase-rmt li {
+  counter-increment: fase;
+  text-align: center; font-size: 13px; font-weight: 800;
+  padding: 6px 4px;
+  border-radius: var(--radius-pill);
+  background: var(--latar-kartu); color: var(--teks-lemah);
+  border: 2px solid var(--garis);
+}
+.fase-rmt li::before { content: counter(fase) ". "; }
+.fase-rmt li.aktif { border-color: var(--warna-utama); color: var(--warna-utama-tua); background: var(--warna-utama-muda); }
+.fase-rmt li.selesai { border-color: var(--warna-benar); color: var(--warna-benar); background: var(--latar-benar); }
+.chip-fase {
+  display: inline-block; vertical-align: middle;
+  font-size: 11px; font-weight: 800; letter-spacing: .02em; text-transform: uppercase;
+  padding: 1px 8px; border-radius: var(--radius-pill);
+  background: var(--warna-utama-muda); color: var(--warna-utama-tua);
+}
+.chip-fase.output { background: var(--latar-benar); color: var(--warna-benar); }
+.chip-fase.input { background: var(--warna-rumus); color: var(--teks); }
+
+.kartu-tujuan {
+  border-left: 4px solid var(--warna-utama);
+  background: var(--latar-kartu);
+  border-radius: var(--radius-opsi);
+  padding: var(--s2) var(--s3);
+  font-size: var(--ukuran-kecil);
+}
+
+/* ---------- Panel Pembimbing AI ---------- */
+.panel-pembimbing { display: grid; gap: var(--s2); }
+.tombol-pembimbing { justify-content: center; }
+.isi-pembimbing {
+  background: var(--latar-kartu);
+  border: 2px solid var(--warna-utama-muda);
+  border-radius: var(--radius-kartu);
+  padding: var(--s3);
+}
+.percakapan { display: grid; gap: var(--s2); }
+.gelembung {
+  max-width: 88%;
+  padding: var(--s2) var(--s3);
+  border-radius: var(--radius-opsi);
+  line-height: 1.45;
+}
+.gelembung strong { display: block; font-size: 12px; color: var(--warna-utama-tua); }
+.gelembung small { display: block; font-size: 11px; color: var(--teks-lemah); margin-top: 2px; }
+.gelembung.siswa { justify-self: end; background: var(--warna-utama); color: #fff; border-bottom-right-radius: 4px; }
+.gelembung.pembimbing { justify-self: start; background: var(--warna-utama-muda); border-bottom-left-radius: 4px; }
+.gelembung.galat { background: var(--latar-salah); }
+.gelembung.menunggu span { color: var(--teks-lemah); font-style: italic; }
+.deret-cepat { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip-tanya {
+  min-height: 36px; padding: 4px 12px;
+  border: 1.5px solid var(--warna-utama); border-radius: var(--radius-pill);
+  background: var(--latar-kartu); color: var(--warna-utama-tua);
+  font-size: var(--ukuran-kecil); font-weight: 700;
+}
+.chip-tanya:disabled { opacity: .5; }
+.form-tanya { display: flex; gap: var(--s2); }
+.form-tanya .input { flex: 1; min-height: 44px; }
+.form-tanya .tombol { min-height: 44px; padding: 0 var(--s3); }

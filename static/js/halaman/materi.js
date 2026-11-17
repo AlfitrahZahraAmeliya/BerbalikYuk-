@@ -5,6 +5,10 @@ import { svgIkon } from '../ikon.js';
 import { kepala, panelHint, panelUmpanBalik, pesanGalat, progressBar, tombolLanjut } from '../komponen/umum.js';
 import { tabelRumus } from '../komponen/tabel-rumus.js';
 import { simulasi } from '../komponen/simulasi.js';
+import { panelPembimbing } from '../komponen/pembimbing.js';
+
+// Layar yang berfungsi sebagai tes formatif tidak diberi pembimbing AI.
+const TANPA_AI = ['prasyarat', 'kuis-jenis'];
 
 let cacheMateri = null;
 export async function muatMateri() {
@@ -335,10 +339,28 @@ function layarPrasyarat(l, siap) {
   return wadah;
 }
 
+/** MLE — Transendensi: menghubungkan konsep ke situasi lain di kehidupan sehari-hari. */
+function layarTransendensi(l, siap) {
+  siap();
+  return h('div', { class: 'tumpuk-lebar' },
+    h('div', { class: 'kartu-judul' }, h('h1', {}, l.judul || 'Hubungkan dengan duniamu')),
+    h('div', { class: 'tumpuk', html: l.isi }),
+    l.pertanyaan ? h('p', { class: 'kotak-kesimpulan' }, h('span', {}, l.pertanyaan)) : null,
+  );
+}
+
+/** MLE — Intensionalitas & Makna: tujuan dan alasan pentingnya materi (layar pertama). */
+function kartuTujuan(m) {
+  if (!m.tujuan && !m.makna) return null;
+  return h('div', { class: 'kartu-tujuan' },
+    m.tujuan ? h('p', {}, h('strong', {}, 'Tujuan: '), m.tujuan) : null,
+    m.makna ? h('p', {}, h('strong', {}, 'Mengapa penting? '), m.makna) : null);
+}
+
 const PERENDER = {
   teks: layarTeks, ciri: layarCiri, tabel: layarTabel, pertanyaan: layarPertanyaan,
   susun: layarSusun, hitung: layarHitung, banding: layarBanding,
-  'kuis-jenis': layarKuisJenis, prasyarat: layarPrasyarat, simulasi,
+  'kuis-jenis': layarKuisJenis, prasyarat: layarPrasyarat, simulasi, transendensi: layarTransendensi,
 };
 
 // ---------- Halaman satu materi ----------
@@ -387,16 +409,22 @@ export async function render(wadah, params) {
   const siap = () => { lanjut.disabled = false; };
   const layar = PERENDER[m.layar[idx].tipe](m.layar[idx], siap);
 
+  const tipe = m.layar[idx].tipe;
+  const panel = TANPA_AI.includes(tipe) ? null : panelPembimbing({ sumber: 'materi', ref: `${id}:${idx}` });
+  if (panel && tipe === 'transendensi') panel.buka();
+
   // Materi yang pernah selesai boleh dilewati tanpa menjawab ulang.
   if (sudahSelesai(idModul(id))) siap();
 
   wadah.append(h('div', { class: 'tumpuk-lebar' },
     kepala({ judul: id === 'prasyarat' ? 'Cek Prasyarat' : `Materi ${id}`, kembali: '#/materi', kanan: `${idx + 1} / ${total}` }),
     progressBar(idx + 1, total),
+    idx === 0 ? kartuTujuan(m) : null,
     layar,
     h('div', { class: 'baris-tombol' },
       idx > 0 ? h('a', { class: 'tombol tombol-garis', href: `#/materi/${id}/${idx - 1}` }, '← Kembali') : null,
       lanjut,
     ),
+    panel ? panel.el : null,
   ));
 }

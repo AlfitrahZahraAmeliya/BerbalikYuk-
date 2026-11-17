@@ -1,6 +1,6 @@
 // F1 — Masuk & Daftar (tanpa email; username + kata sandi).
 import { api } from '../api.js';
-import { muatProgres, setSiswa } from '../state.js';
+import { muatProgres, muatStatusAI, setSiswa } from '../state.js';
 import { h } from '../util.js';
 
 function bidang(label, props) {
@@ -23,6 +23,7 @@ function logo() {
 async function setelahMasuk(siswa) {
   setSiswa(siswa);
   try { await muatProgres(); } catch { /* progres dimuat ulang di beranda */ }
+  await muatStatusAI();
   window.location.hash = '#/beranda';
 }
 

@@ -7,7 +7,17 @@ export const state = {
   progres: bacaLokal('progres-terakhir', {}),
   kuisTerakhir: null,
   offline: false,
+  // Pembimbing AI (F12). Nama berasal dari server (NAMA_PEMBIMBING).
+  ai: { aktif: false, nama: 'Kak Balik' },
 };
+
+export async function muatStatusAI() {
+  try {
+    state.ai = await api.statusPembimbing();
+  } catch {
+    state.ai = { ...state.ai, aktif: false };
+  }
+}
 
 // Urutan belajar yang disarankan (EL04, DS02). Dipakai tombol "Mulai Belajar".
 export const URUTAN = [

@@ -24,3 +24,14 @@ class Config:
     PERMANENT_SESSION_LIFETIME = timedelta(days=30)
 
     MAX_CONTENT_LENGTH = 64 * 1024  # request JSON kecil saja
+
+    # ---- Pembimbing AI (Gemini) ----
+    # Nama tutor: SATU-SATUNYA tempat nama ini ditentukan (dipakai prompt & UI).
+    NAMA_PEMBIMBING = os.environ.get("NAMA_PEMBIMBING", "Kak Balik")
+    # Kunci HANYA dari variabel lingkungan. Jangan pernah ditulis di kode.
+    GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "").strip()
+    GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash").strip()
+    GEMINI_URL_DASAR = os.environ.get(
+        "GEMINI_URL_DASAR", "https://generativelanguage.googleapis.com/v1beta"
+    ).rstrip("/")
+    AI_BATAS_PER_JAM = int(os.environ.get("AI_BATAS_PER_JAM", "40"))

@@ -41,11 +41,28 @@ create table if not exists public.kuis_hasil (
   created_at   timestamptz default now()
 );
 
+-- Percakapan dengan Pembimbing AI (tanpa nama siswa) untuk analisis penelitian.
+create table if not exists public.bimbingan_ai (
+  id           bigint generated always as identity primary key,
+  siswa_id     uuid references public.siswa(id) on delete cascade,
+  sumber       text not null,          -- latihan | contoh | materi
+  ref_id       text not null,          -- id soal / nomor contoh / id materi:layar
+  fase         text,                   -- input | elaborasi | output | refleksi
+  mode         text not null,          -- bimbing | refleksi
+  pesan_siswa  text not null,
+  balasan      text not null,
+  tersaring    boolean default false,  -- balasan AI diganti karena menyebut jawaban
+  cadangan     boolean default false,  -- AI gagal, memakai petunjuk statis
+  created_at   timestamptz default now()
+);
+
 create index if not exists attempts_siswa_idx on public.attempts (siswa_id, created_at);
 create index if not exists kuis_hasil_siswa_idx on public.kuis_hasil (siswa_id, created_at);
+create index if not exists bimbingan_ai_siswa_idx on public.bimbingan_ai (siswa_id, created_at);
 
 -- RLS aktif TANPA policy: hanya server (service_role key) yang bisa membaca/menulis.
 alter table public.siswa      enable row level security;
 alter table public.progress   enable row level security;
 alter table public.attempts   enable row level security;
 alter table public.kuis_hasil enable row level security;
+alter table public.bimbingan_ai enable row level security;

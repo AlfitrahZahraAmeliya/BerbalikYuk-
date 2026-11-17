@@ -1,7 +1,9 @@
 """Endpoint JSON /api/* (kontrak lengkap di CLAUDE.md)."""
-from flask import Blueprint, jsonify, request, session
+from datetime import datetime, timedelta, timezone
 
-from . import auth, bank_soal, checker
+from flask import Blueprint, current_app, jsonify, request, session
+
+from . import auth, bank_soal, checker, pembimbing
 from .auth import galat, siswa_id_sekarang, wajib_login
 from .db import get_repo, simpan_progres, tambah_hint
 
@@ -167,6 +169,10 @@ def periksa():
         "hint_level": _angka_bulat(data.get("hint_level"), 0, 3),
         "durasi_detik": _angka_bulat(data.get("durasi_detik"), 0, 3600),
     })
+    # Setelah benar, kirim arah hubungan untuk langkah Validasi (RMT fase Output).
+    if hasil["benar"] and soal.get("nilai"):
+        berubah, naik, dicari, dicari_naik = checker.arah_hubungan(soal)
+        hasil["arah"] = {"berubah": berubah, "naik": naik, "dicari": dicari, "dicari_naik": dicari_naik}
     # Pembahasan diberikan setelah benar, atau setelah 2 kali mencoba.
     if hasil["benar"] or _angka_bulat(data.get("percobaan"), 1, 99, 1) >= 2:
         hasil["pembahasan"] = soal.get("pembahasan", "")
@@ -193,6 +199,85 @@ def kirim_kuis():
     get_repo().simpan_kuis(siswa_id, skor, skor_per_tp)
     simpan_progres(siswa_id, "kuis", True, skor)
     return jsonify({"skor": skor, "skor_per_tp": skor_per_tp, "pembahasan": rincian})
+
+
+# ---------- Pembimbing AI (F12) ----------
+
+@bp.get("/pembimbing/status")
+@wajib_login
+def status_pembimbing():
+    config = current_app.config
+    return jsonify({"aktif": bool(config["GEMINI_API_KEY"]), "nama": config["NAMA_PEMBIMBING"]})
+
+
+@bp.post("/pembimbing")
+@wajib_login
+def tanya_pembimbing():
+    data = _json_wajib()
+    if data is None:
+        return galat("Format data tidak dikenali.", 415)
+    config = current_app.config
+    nama = config["NAMA_PEMBIMBING"]
+    if not config["GEMINI_API_KEY"]:
+        return galat(f"{nama} belum aktif. Pakai Petunjuk dulu, ya.", 503)
+
+    sumber = data.get("sumber")
+    mode = data.get("mode", "bimbing")
+    fase = data.get("fase") if data.get("fase") in pembimbing.FASE else None
+    pesan = str(data.get("pesan", "")).strip()
+    if sumber not in pembimbing.SUMBER or mode not in pembimbing.MODE:
+        return galat("Permintaan tidak dikenali.")
+    if not 1 <= len(pesan) <= pembimbing.PANJANG_MAKS_PESAN:
+        return galat(f"Tulis pertanyaanmu (maksimal {pembimbing.PANJANG_MAKS_PESAN} huruf).")
+    ref = str(data.get("ref", ""))[:40]
+    sumber_data = pembimbing.cari_sumber(sumber, ref)
+    if sumber_data is None:
+        return galat("Bagian yang ditanyakan tidak ditemukan.", 404)
+
+    siswa_id = siswa_id_sekarang()
+    repo = get_repo()
+    if sumber == "latihan" and not _tingkat_terbuka(siswa_id, sumber_data["tingkat"]):
+        return galat("Tingkat ini belum terbuka.", 403)
+    if mode == "refleksi" and not (sumber == "latihan" and repo.pernah_benar(siswa_id, sumber_data["id"])):
+        return galat("Refleksi dibuka setelah soal dijawab dengan benar.")
+
+    sejak = (datetime.now(timezone.utc) - timedelta(hours=1)).isoformat()
+    if repo.hitung_bimbingan_sejak(siswa_id, sejak) >= config["AI_BATAS_PER_JAM"]:
+        return galat(f"{nama} sedang istirahat sebentar. Coba lagi nanti atau pakai Petunjuk, ya.", 429)
+
+    keadaan = data.get("keadaan") if isinstance(data.get("keadaan"), dict) else {}
+    riwayat = pembimbing.bersihkan_riwayat(data.get("riwayat"))
+    jumlah_tanya = sum(1 for g in riwayat if g["peran"] == "siswa")
+    cadangan = pembimbing.petunjuk_cadangan(sumber, sumber_data, keadaan, jumlah_tanya)
+
+    sistem = pembimbing.prompt_sistem(nama)
+    if mode == "refleksi":
+        sistem += pembimbing.TAMBAHAN_REFLEKSI
+        terlarang = []  # jawaban sudah diperoleh siswa sendiri
+    else:
+        terlarang = pembimbing.angka_terlarang(sumber, sumber_data, keadaan)
+    sistem += pembimbing.bangun_konteks(sumber, sumber_data, keadaan, fase)
+
+    pakai_cadangan = False
+    try:
+        mentah = pembimbing.minta_gemini(config, sistem, riwayat, pesan)
+        balasan, tersaring = pembimbing.saring_balasan(mentah, terlarang, cadangan)
+    except pembimbing.GalatPembimbing as masalah:
+        current_app.logger.warning("Pembimbing AI memakai cadangan: %s", masalah)
+        balasan, tersaring, pakai_cadangan = cadangan, False, True
+
+    repo.simpan_bimbingan({
+        "siswa_id": siswa_id,
+        "sumber": sumber,
+        "ref_id": ref,
+        "fase": fase,
+        "mode": mode,
+        "pesan_siswa": pesan,
+        "balasan": balasan,
+        "tersaring": tersaring,
+        "cadangan": pakai_cadangan,
+    })
+    return jsonify({"balasan": balasan, "tersaring": tersaring, "cadangan": pakai_cadangan, "nama": nama})
 
 
 # ---------- Galat ----------
